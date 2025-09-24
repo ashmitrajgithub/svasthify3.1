@@ -5,7 +5,6 @@ import { Clock, User, MapPin, Star, X, CheckCircle, ArrowLeft, ArrowRight } from
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
 
 interface Trainer {
   id: number
@@ -148,27 +147,29 @@ export function BookingModal({ isOpen, onClose, trainer }: BookingModalProps) {
   if (!isOpen || !trainer) return null
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-      <div className="relative w-full max-w-4xl max-h-[90vh] overflow-hidden bg-white rounded-2xl shadow-2xl animate-in zoom-in-95 duration-300">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/50 backdrop-blur-sm">
+      <div className="relative w-full max-w-sm sm:max-w-2xl lg:max-w-4xl max-h-[95vh] sm:max-h-[90vh] overflow-hidden bg-white rounded-xl sm:rounded-2xl shadow-2xl animate-in zoom-in-95 duration-300">
         {/* Close Button */}
         <button
           onClick={handleClose}
-          className="absolute top-4 right-4 z-10 p-2 bg-white/80 backdrop-blur-sm rounded-full hover:bg-white transition-colors duration-200 shadow-lg"
+          className="absolute top-2 right-2 sm:top-4 sm:right-4 z-10 p-1.5 sm:p-2 bg-white/80 backdrop-blur-sm rounded-full hover:bg-white transition-colors duration-200 shadow-lg"
         >
-          <X className="w-5 h-5 text-gray-600" />
+          <X className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" />
         </button>
 
         {bookingComplete ? (
           // Success Screen
-          <div className="p-8 text-center">
-            <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6 animate-bounce">
-              <CheckCircle className="w-10 h-10 text-green-600" />
+          <div className="p-6 sm:p-8 text-center">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6 animate-bounce">
+              <CheckCircle className="w-8 h-8 sm:w-10 sm:h-10 text-green-600" />
             </div>
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Booking Confirmed!</h2>
-            <p className="text-lg text-gray-600 mb-6">Your session with {trainer.name} has been successfully booked.</p>
-            <div className="bg-gray-50 rounded-lg p-6 mb-6 text-left max-w-md mx-auto">
-              <h3 className="font-semibold text-gray-900 mb-3">Booking Details:</h3>
-              <div className="space-y-2 text-sm text-gray-600">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 sm:mb-4">Booking Confirmed!</h2>
+            <p className="text-base sm:text-lg text-gray-600 mb-4 sm:mb-6">
+              Your session with {trainer.name} has been successfully booked.
+            </p>
+            <div className="bg-gray-50 rounded-lg p-4 sm:p-6 mb-4 sm:mb-6 text-left max-w-md mx-auto">
+              <h3 className="font-semibold text-gray-900 mb-2 sm:mb-3">Booking Details:</h3>
+              <div className="space-y-1.5 sm:space-y-2 text-sm text-gray-600">
                 <div className="flex justify-between">
                   <span>Date:</span>
                   <span className="font-medium">{selectedDate}</span>
@@ -183,59 +184,59 @@ export function BookingModal({ isOpen, onClose, trainer }: BookingModalProps) {
                 </div>
               </div>
             </div>
-            <p className="text-sm text-gray-500 mb-6">
+            <p className="text-xs sm:text-sm text-gray-500 mb-4 sm:mb-6 px-4">
               A confirmation email has been sent to your email address with all the details.
             </p>
-            <Button onClick={handleClose} className="bg-green-600 hover:bg-green-700">
+            <Button onClick={handleClose} className="bg-green-600 hover:bg-green-700 w-full sm:w-auto">
               Close
             </Button>
           </div>
         ) : (
-          <div className="flex h-full max-h-[90vh]">
-            {/* Left Panel - Trainer Info */}
-            <div className="w-1/3 bg-gradient-to-br from-green-50 to-blue-50 p-6 flex flex-col">
+          <div className="flex flex-col lg:flex-row h-full max-h-[95vh] sm:max-h-[90vh]">
+            {/* Left Panel - Trainer Info (hidden on mobile, shown as header on mobile) */}
+            <div className="lg:w-1/3 bg-gradient-to-br from-green-50 to-blue-50 p-3 sm:p-4 lg:p-6 flex flex-col">
               <div className="flex-1">
-                <div className="text-center mb-6">
+                <div className="text-center mb-4 sm:mb-6">
                   <img
                     src={trainer.image || "/placeholder.svg"}
                     alt={trainer.name}
-                    className="w-24 h-24 rounded-full mx-auto mb-4 object-cover shadow-lg"
+                    className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 rounded-full mx-auto mb-2 sm:mb-4 object-cover shadow-lg"
                   />
-                  <h3 className="text-xl font-bold text-gray-900">{trainer.name}</h3>
-                  <p className="text-green-600 font-medium">{trainer.specialization}</p>
-                  <div className="flex items-center justify-center space-x-2 mt-2">
-                    <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                    <span className="text-sm font-medium">{trainer.rating}</span>
-                    <span className="text-sm text-gray-500">({trainer.reviews} reviews)</span>
+                  <h3 className="text-lg sm:text-xl font-bold text-gray-900">{trainer.name}</h3>
+                  <p className="text-green-600 font-medium text-sm sm:text-base">{trainer.specialization}</p>
+                  <div className="flex items-center justify-center space-x-1 sm:space-x-2 mt-1 sm:mt-2">
+                    <Star className="w-3 h-3 sm:w-4 sm:h-4 text-yellow-500 fill-current" />
+                    <span className="text-xs sm:text-sm font-medium">{trainer.rating}</span>
+                    <span className="text-xs sm:text-sm text-gray-500">({trainer.reviews} reviews)</span>
                   </div>
                 </div>
 
-                <div className="space-y-4">
-                  <div className="flex items-center space-x-3 text-sm text-gray-600">
-                    <User className="w-4 h-4 text-green-600" />
+                <div className="space-y-2 sm:space-y-4 hidden lg:block">
+                  <div className="flex items-center space-x-2 sm:space-x-3 text-xs sm:text-sm text-gray-600">
+                    <User className="w-3 h-3 sm:w-4 sm:h-4 text-green-600" />
                     <span>{trainer.experience} experience</span>
                   </div>
-                  <div className="flex items-center space-x-3 text-sm text-gray-600">
-                    <MapPin className="w-4 h-4 text-green-600" />
+                  <div className="flex items-center space-x-2 sm:space-x-3 text-xs sm:text-sm text-gray-600">
+                    <MapPin className="w-3 h-3 sm:w-4 sm:h-4 text-green-600" />
                     <span>{trainer.location}</span>
                   </div>
-                  <div className="flex items-center space-x-3 text-sm text-gray-600">
-                    <Clock className="w-4 h-4 text-green-600" />
+                  <div className="flex items-center space-x-2 sm:space-x-3 text-xs sm:text-sm text-gray-600">
+                    <Clock className="w-3 h-3 sm:w-4 sm:h-4 text-green-600" />
                     <span>{trainer.availability}</span>
                   </div>
                 </div>
 
-                <div className="mt-6 p-4 bg-white/60 backdrop-blur-sm rounded-lg">
+                <div className="mt-4 sm:mt-6 p-3 sm:p-4 bg-white/60 backdrop-blur-sm rounded-lg hidden lg:block">
                   <h4 className="font-semibold text-gray-900 mb-2">About</h4>
-                  <p className="text-sm text-gray-600 leading-relaxed">{trainer.bio}</p>
+                  <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">{trainer.bio}</p>
                 </div>
               </div>
 
               {/* Price Summary */}
               {selectedDate && selectedTime && (
-                <div className="mt-6 p-4 bg-white rounded-lg shadow-sm border">
-                  <h4 className="font-semibold text-gray-900 mb-3">Booking Summary</h4>
-                  <div className="space-y-2 text-sm">
+                <div className="mt-4 sm:mt-6 p-3 sm:p-4 bg-white rounded-lg shadow-sm border">
+                  <h4 className="font-semibold text-gray-900 mb-2 sm:mb-3 text-sm sm:text-base">Booking Summary</h4>
+                  <div className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm">
                     <div className="flex justify-between">
                       <span>Date:</span>
                       <span className="font-medium">{selectedDate}</span>
@@ -244,7 +245,7 @@ export function BookingModal({ isOpen, onClose, trainer }: BookingModalProps) {
                       <span>Time:</span>
                       <span className="font-medium">{selectedTime}</span>
                     </div>
-                    <div className="border-t pt-2 mt-2">
+                    <div className="border-t pt-1.5 sm:pt-2 mt-1.5 sm:mt-2">
                       <div className="flex justify-between font-bold text-green-600">
                         <span>Total:</span>
                         <span>₹{calculateTotalPrice()}</span>
@@ -256,13 +257,13 @@ export function BookingModal({ isOpen, onClose, trainer }: BookingModalProps) {
             </div>
 
             {/* Right Panel - Booking Steps */}
-            <div className="flex-1 p-6 flex flex-col">
+            <div className="flex-1 p-3 sm:p-4 lg:p-6 flex flex-col">
               {/* Step Indicator */}
-              <div className="flex items-center justify-center mb-8">
+              <div className="flex items-center justify-center mb-4 sm:mb-6 lg:mb-8">
                 {[1, 2].map((step) => (
                   <div key={step} className="flex items-center">
                     <div
-                      className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium transition-all duration-300 ${
+                      className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-xs sm:text-sm font-medium transition-all duration-300 ${
                         currentStep >= step ? "bg-green-600 text-white" : "bg-gray-200 text-gray-600"
                       }`}
                     >
@@ -270,7 +271,7 @@ export function BookingModal({ isOpen, onClose, trainer }: BookingModalProps) {
                     </div>
                     {step < 2 && (
                       <div
-                        className={`w-16 h-1 mx-2 transition-all duration-300 ${
+                        className={`w-12 sm:w-16 h-0.5 sm:h-1 mx-1 sm:mx-2 transition-all duration-300 ${
                           currentStep > step ? "bg-green-600" : "bg-gray-200"
                         }`}
                       />
@@ -280,49 +281,52 @@ export function BookingModal({ isOpen, onClose, trainer }: BookingModalProps) {
               </div>
 
               {/* Step Content */}
-              <div className="min-h-[400px] overflow-y-auto flex-1 pb-20">
+              <div className="min-h-[300px] sm:min-h-[400px] overflow-y-auto flex-1 pb-16 sm:pb-20">
                 {currentStep === 1 && (
-                  <div className="space-y-6">
+                  <div className="space-y-4 sm:space-y-6">
                     <div>
-                      <h2 className="text-2xl font-bold text-gray-900 mb-2">Select Date & Time</h2>
-                      <p className="text-gray-600">Choose your preferred date and time slot</p>
+                      <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-1 sm:mb-2">Select Date & Time</h2>
+                      <p className="text-gray-600 text-sm sm:text-base">Choose your preferred date and time slot</p>
                     </div>
 
                     {/* Calendar */}
                     <div>
-                      <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-lg font-semibold text-gray-900">
+                      <div className="flex items-center justify-between mb-3 sm:mb-4">
+                        <h3 className="text-base sm:text-lg font-semibold text-gray-900">
                           {currentMonth.toLocaleDateString("en-US", { month: "long", year: "numeric" })}
                         </h3>
-                        <div className="flex space-x-2">
+                        <div className="flex space-x-1 sm:space-x-2">
                           <button
                             onClick={() =>
                               setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1))
                             }
-                            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                            className="p-1.5 sm:p-2 hover:bg-gray-100 rounded-lg transition-colors"
                           >
-                            <ArrowLeft className="w-4 h-4" />
+                            <ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4" />
                           </button>
                           <button
                             onClick={() =>
                               setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1))
                             }
-                            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                            className="p-1.5 sm:p-2 hover:bg-gray-100 rounded-lg transition-colors"
                           >
-                            <ArrowRight className="w-4 h-4" />
+                            <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
                           </button>
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-7 gap-1 mb-2">
+                      <div className="grid grid-cols-7 gap-0.5 sm:gap-1 mb-1 sm:mb-2">
                         {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
-                          <div key={day} className="p-2 text-center text-sm font-medium text-gray-500">
+                          <div
+                            key={day}
+                            className="p-1 sm:p-2 text-center text-xs sm:text-sm font-medium text-gray-500"
+                          >
                             {day}
                           </div>
                         ))}
                       </div>
 
-                      <div className="grid grid-cols-7 gap-1">
+                      <div className="grid grid-cols-7 gap-0.5 sm:gap-1">
                         {generateCalendarDates().map((date, index) => {
                           const isCurrentMonth = date.getMonth() === currentMonth.getMonth()
                           const isAvailable = isDateAvailable(date)
@@ -334,7 +338,7 @@ export function BookingModal({ isOpen, onClose, trainer }: BookingModalProps) {
                               key={index}
                               onClick={() => isAvailable && isCurrentMonth && setSelectedDate(formatDate(date))}
                               disabled={!isAvailable || !isCurrentMonth}
-                              className={`p-2 text-sm rounded-lg transition-all duration-200 ${
+                              className={`p-1.5 sm:p-2 text-xs sm:text-sm rounded-lg transition-all duration-200 ${
                                 isSelected
                                   ? "bg-green-600 text-white shadow-lg"
                                   : isToday
@@ -354,14 +358,16 @@ export function BookingModal({ isOpen, onClose, trainer }: BookingModalProps) {
                     {/* Time Slots */}
                     {selectedDate && (
                       <div className="animate-in slide-in-from-bottom duration-300">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-4">Available Time Slots</h3>
-                        <div className="grid grid-cols-3 gap-3">
+                        <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">
+                          Available Time Slots
+                        </h3>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3">
                           {timeSlots.map((slot) => (
                             <button
                               key={slot.time}
                               onClick={() => slot.available && setSelectedTime(slot.time)}
                               disabled={!slot.available}
-                              className={`p-3 rounded-lg border text-sm font-medium transition-all duration-200 ${
+                              className={`p-2 sm:p-3 rounded-lg border text-xs sm:text-sm font-medium transition-all duration-200 ${
                                 selectedTime === slot.time
                                   ? "bg-green-600 text-white border-green-600 shadow-lg"
                                   : slot.available
@@ -370,7 +376,6 @@ export function BookingModal({ isOpen, onClose, trainer }: BookingModalProps) {
                               }`}
                             >
                               <div>{slot.time}</div>
-                              {/* <div className="text-xs opacity-75">₹{slot.price}</div> */}
                             </button>
                           ))}
                         </div>
@@ -380,15 +385,20 @@ export function BookingModal({ isOpen, onClose, trainer }: BookingModalProps) {
                 )}
 
                 {currentStep === 2 && (
-                  <div className="space-y-6">
+                  <div className="space-y-4 sm:space-y-6">
                     <div>
-                      <h2 className="text-2xl font-bold text-gray-900 mb-2">Contact Information</h2>
-                      <p className="text-gray-600">Please provide your details to complete the booking</p>
+                      <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-1 sm:mb-2">Contact Information</h2>
+                      <p className="text-gray-600 text-sm sm:text-base">
+                        Please provide your details to complete the booking
+                      </p>
                     </div>
 
-                    <div className="grid grid-cols-1 gap-4">
+                    <div className="grid grid-cols-1 gap-3 sm:gap-4">
                       <div>
-                        <Label htmlFor="name" className="text-sm font-medium text-gray-700 mb-2 block">
+                        <Label
+                          htmlFor="name"
+                          className="text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2 block"
+                        >
                           Full Name *
                         </Label>
                         <Input
@@ -397,12 +407,15 @@ export function BookingModal({ isOpen, onClose, trainer }: BookingModalProps) {
                           placeholder="Enter your full name"
                           value={bookingData.clientName}
                           onChange={(e) => setBookingData({ ...bookingData, clientName: e.target.value })}
-                          className="w-full"
+                          className="w-full text-sm sm:text-base"
                         />
                       </div>
 
                       <div>
-                        <Label htmlFor="email" className="text-sm font-medium text-gray-700 mb-2 block">
+                        <Label
+                          htmlFor="email"
+                          className="text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2 block"
+                        >
                           Email Address *
                         </Label>
                         <Input
@@ -411,12 +424,15 @@ export function BookingModal({ isOpen, onClose, trainer }: BookingModalProps) {
                           placeholder="Enter your email address"
                           value={bookingData.clientEmail}
                           onChange={(e) => setBookingData({ ...bookingData, clientEmail: e.target.value })}
-                          className="w-full"
+                          className="w-full text-sm sm:text-base"
                         />
                       </div>
 
                       <div>
-                        <Label htmlFor="phone" className="text-sm font-medium text-gray-700 mb-2 block">
+                        <Label
+                          htmlFor="phone"
+                          className="text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2 block"
+                        >
                           Phone Number *
                         </Label>
                         <Input
@@ -425,7 +441,7 @@ export function BookingModal({ isOpen, onClose, trainer }: BookingModalProps) {
                           placeholder="Enter your phone number"
                           value={bookingData.clientPhone}
                           onChange={(e) => setBookingData({ ...bookingData, clientPhone: e.target.value })}
-                          className="w-full"
+                          className="w-full text-sm sm:text-base"
                         />
                       </div>
                     </div>
@@ -434,11 +450,11 @@ export function BookingModal({ isOpen, onClose, trainer }: BookingModalProps) {
               </div>
 
               {/* Navigation Buttons */}
-              <div className="flex-shrink-0 flex justify-between items-center px-6 py-4 bg-white border-t border-gray-200 absolute bottom-0 left-0 right-0">
+              <div className="flex-shrink-0 flex justify-between items-center px-2 sm:px-4 lg:px-6 py-3 sm:py-4 bg-white border-t border-gray-200 absolute bottom-0 left-0 right-0">
                 <Button
                   variant="outline"
                   onClick={() => (currentStep > 1 ? setCurrentStep(currentStep - 1) : handleClose())}
-                  className="bg-transparent"
+                  className="bg-transparent text-sm sm:text-base px-3 sm:px-4"
                 >
                   {currentStep === 1 ? "Cancel" : "Back"}
                 </Button>
@@ -457,11 +473,11 @@ export function BookingModal({ isOpen, onClose, trainer }: BookingModalProps) {
                       (!bookingData.clientName || !bookingData.clientEmail || !bookingData.clientPhone)) ||
                     isLoading
                   }
-                  className="bg-green-600 hover:bg-green-700 min-w-[120px]"
+                  className="bg-green-600 hover:bg-green-700 min-w-[100px] sm:min-w-[120px] text-sm sm:text-base"
                 >
                   {isLoading ? (
-                    <div className="flex items-center space-x-2">
-                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <div className="flex items-center space-x-1 sm:space-x-2">
+                      <div className="w-3 h-3 sm:w-4 sm:h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                       <span>Booking...</span>
                     </div>
                   ) : currentStep === 2 ? (

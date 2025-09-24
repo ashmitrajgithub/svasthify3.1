@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Star, Calendar, MapPin, Search, Shield,ArrowRight, Award, Clock } from "lucide-react"
+import { Star, Calendar, MapPin, Search, Shield, ArrowRight, Clock } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -146,33 +146,35 @@ export function TrainersSection() {
   }
 
   return (
-    <section className="py-20 px-6 bg-gradient-to-br from-green-100  to-white" id="trainers-section">
+    <section
+      className="py-12 sm:py-16 lg:py-20 px-3 sm:px-4 lg:px-6 bg-gradient-to-br from-green-100 to-white"
+      id="trainers-section"
+    >
       <div className="container mx-auto max-w-7xl">
-        <div className="text-center mb-16 relative">
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-black mb-4 leading-tight tracking-tight">
+        <div className="text-center mb-8 sm:mb-12 lg:mb-16 relative">
+          <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-black mb-3 sm:mb-4 leading-tight tracking-tight px-4">
             Meet Our{" "}
             <span className="bg-gradient-to-r from-green-800 to-green-800 bg-clip-text text-transparent">Trainers</span>
           </h2>
 
           <div
-            className={`mt-4 absolute top-0 right-0 ${
-              isVisible ? "animate-fade-in-up animate-delay-300 " : "opacity-0"
+            className={`mt-4 flex justify-center sm:absolute sm:top-0 sm:right-0 ${
+              isVisible ? "animate-fade-in-up animate-delay-300" : "opacity-0"
             }`}
           >
             <Button
               asChild
-              className="rounded-full px-4 bg-green-200 text-black hover:bg-green-300 transition-colors"
+              className="rounded-full px-3 sm:px-4 py-2 bg-green-200 text-black hover:bg-green-300 transition-colors text-sm sm:text-base"
             >
               <Link href="/trainers" target="_blank" rel="noopener noreferrer" aria-label="See all trainers">
-              
-                See all trainers 
-                <ArrowRight className="ml-2 w-4 h-4" />
+                See all trainers
+                <ArrowRight className="ml-2 w-3 h-3 sm:w-4 sm:h-4" />
               </Link>
             </Button>
           </div>
         </div>
 
-        <div className="group relative mb-20 overflow-hidden">
+        <div className="group relative mb-12 sm:mb-16 lg:mb-20 overflow-hidden">
           <div className="marquee-track flex items-stretch">
             {[0, 1].map((dup) => (
               <div
@@ -181,9 +183,9 @@ export function TrainersSection() {
                 aria-hidden={dup === 1 ? "true" : "false"}
               >
                 {trainers.map((trainer, index) => (
-                  <div key={`${dup}-${trainer.id}`} className="marquee-item shrink-0 box-border px-4">
+                  <div key={`${dup}-${trainer.id}`} className="marquee-item shrink-0 box-border px-2 sm:px-3 lg:px-4">
                     <Card
-                      className={`trainer-card group/inner overflow-hidden rounded-3xl border-0 h-full flex flex-col ${
+                      className={`trainer-card group/inner overflow-hidden rounded-2xl sm:rounded-3xl border-0 h-full flex flex-col ${
                         dup === 0
                           ? isVisible
                             ? `animate-fade-in-up animate-delay-${400 + index * 100}`
@@ -191,14 +193,14 @@ export function TrainersSection() {
                           : ""
                       }`}
                     >
-                      <div className="relative h-64 overflow-hidden">
+                      <div className="relative h-48 sm:h-56 lg:h-64 overflow-hidden">
                         <div
-                          className="pointer-events-none absolute inset-x-0 top-0 z-10 h-20 "
+                          className="pointer-events-none absolute inset-x-0 top-0 z-10 h-16 sm:h-20"
                           aria-hidden="true"
                           role="presentation"
                         />
                         <div
-                          className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-24 "
+                          className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-20 sm:h-24"
                           aria-hidden="true"
                           role="presentation"
                         />
@@ -210,58 +212,64 @@ export function TrainersSection() {
                         />
 
                         {trainer.verified && (
-                          <div className="absolute top-4 right-4 z-20">
-                            <div className="bg-white/90 backdrop-blur-sm rounded-full p-2 shadow-premium">
-                              <Shield className="w-4 h-4 text-sage-600" />
+                          <div className="absolute top-2 sm:top-4 right-2 sm:right-4 z-20">
+                            <div className="bg-white/90 backdrop-blur-sm rounded-full p-1.5 sm:p-2 shadow-premium">
+                              <Shield className="w-3 h-3 sm:w-4 sm:h-4 text-sage-600" />
                             </div>
                           </div>
                         )}
 
-                        <div className="absolute top-4 left-4 z-20">
-                          <div className="bg-white/90 backdrop-blur-sm rounded-full px-3 py-1.5 shadow-premium">
-                            <div className="flex items-center space-x-1.5">
-                              <Star className="w-4 h-4 text-amber-500 fill-current" />
-                              <span className="text-sm font-semibold text-slate-900">{trainer.rating}</span>
+                        <div className="absolute top-2 sm:top-4 left-2 sm:left-4 z-20">
+                          <div className="bg-white/90 backdrop-blur-sm rounded-full px-2 sm:px-3 py-1 sm:py-1.5 shadow-premium">
+                            <div className="flex items-center space-x-1 sm:space-x-1.5">
+                              <Star className="w-3 h-3 sm:w-4 sm:h-4 text-amber-500 fill-current" />
+                              <span className="text-xs sm:text-sm font-semibold text-slate-900">{trainer.rating}</span>
                             </div>
                           </div>
                         </div>
 
-                        <div className="absolute bottom-4 left-4 z-20">
-                          <div className="bg-white/90 backdrop-blur-sm rounded-full px-3 py-1.5 shadow-premium">
-                            <div className="flex items-center space-x-1.5">
-                              <Clock className="w-4 h-4 text-sage-600" />
-                              <span className="text-sm font-semibold text-slate-900">{trainer.experience}</span>
+                        <div className="absolute bottom-2 sm:bottom-4 left-2 sm:left-4 z-20">
+                          <div className="bg-white/90 backdrop-blur-sm rounded-full px-2 sm:px-3 py-1 sm:py-1.5 shadow-premium">
+                            <div className="flex items-center space-x-1 sm:space-x-1.5">
+                              <Clock className="w-3 h-3 sm:w-4 sm:h-4 text-sage-600" />
+                              <span className="text-xs sm:text-sm font-semibold text-slate-900">
+                                {trainer.experience}
+                              </span>
                             </div>
                           </div>
                         </div>
 
-                        <div className="absolute bottom-4 right-4 z-20">
-                          <div className="bg-sage-500 text-white rounded-full px-4 py-2 shadow-sage">
-                            <span className="text-base font-bold">{trainer.price}</span>
+                        <div className="absolute bottom-2 sm:bottom-4 right-2 sm:right-4 z-20">
+                          <div className="bg-sage-500 text-white rounded-full px-3 sm:px-4 py-1.5 sm:py-2 shadow-sage">
+                            <span className="text-sm sm:text-base font-bold">{trainer.price}</span>
                           </div>
                         </div>
                       </div>
 
-                      <CardContent className="p-6 flex-grow flex flex-col">
-                        <div className="flex items-center justify-center mb-4">
-                          <div className="flex items-center space-x-2 text-slate-600 bg-slate-50 rounded-full px-3 py-1.5">
-                            <MapPin className="w-4 h-4" />
-                            <span className="text-sm font-medium">{trainer.location.split(",")[0]}</span>
+                      <CardContent className="p-4 sm:p-5 lg:p-6 flex-grow flex flex-col">
+                        <div className="flex items-center justify-center mb-3 sm:mb-4">
+                          <div className="flex items-center space-x-1.5 sm:space-x-2 text-slate-600 bg-slate-50 rounded-full px-2.5 sm:px-3 py-1 sm:py-1.5">
+                            <MapPin className="w-3 h-3 sm:w-4 sm:h-4" />
+                            <span className="text-xs sm:text-sm font-medium">{trainer.location.split(",")[0]}</span>
                           </div>
                         </div>
 
-                        <div className="text-center mb-4">
-                          <h3 className="text-xl font-semibold text-slate-900 mb-1">{trainer.name}</h3>
-                          <p className="text-sage-600 font-medium text-base mb-2">{trainer.specialization}</p>
-                          <p className="text-slate-600 text-sm leading-relaxed line-clamp-2">{trainer.bio}</p>
+                        <div className="text-center mb-3 sm:mb-4">
+                          <h3 className="text-lg sm:text-xl font-semibold text-slate-900 mb-1">{trainer.name}</h3>
+                          <p className="text-sage-600 font-medium text-sm sm:text-base mb-2">
+                            {trainer.specialization}
+                          </p>
+                          <p className="text-slate-600 text-xs sm:text-sm leading-relaxed line-clamp-2">
+                            {trainer.bio}
+                          </p>
                         </div>
 
-                        <div className="mb-4 flex-grow">
-                          <div className="flex flex-wrap justify-center gap-2">
+                        <div className="mb-3 sm:mb-4 flex-grow">
+                          <div className="flex flex-wrap justify-center gap-1.5 sm:gap-2">
                             {trainer.highlights.slice(0, 3).map((highlight) => (
                               <Badge
                                 key={highlight}
-                                className="badge-sage text-xs px-3 py-1.5 rounded-full font-medium border-0 bg-gradient-to-r from-green-500 to-green-400 hover:from-green-600 hover:to-green-500"
+                                className="badge-sage text-xs px-2 sm:px-3 py-1 sm:py-1.5 rounded-full font-medium border-0 bg-gradient-to-r from-green-500 to-green-400 hover:from-green-600 hover:to-green-500"
                               >
                                 {highlight}
                               </Badge>
@@ -269,12 +277,12 @@ export function TrainersSection() {
                           </div>
                         </div>
 
-                        <div className="mt-auto space-y-4">
+                        <div className="mt-auto space-y-3 sm:space-y-4">
                           <Button
-                            className="w-full btn-premium text-black bg-gradient-to-r from-green-600 to-green-700 hover:from-green-600 hover:to-green-500 font-semibold py-3 rounded-2xl transition-all duration-300 hover:scale-105 shadow-sage"
+                            className="w-full btn-premium text-black bg-gradient-to-r from-green-600 to-green-700 hover:from-green-600 hover:to-green-500 font-semibold py-2.5 sm:py-3 rounded-xl sm:rounded-2xl transition-all duration-300 hover:scale-105 shadow-sage text-sm sm:text-base"
                             onClick={() => handleBookTrainer(trainer.id)}
                           >
-                            <Calendar className="w-4 h-4 mr-2" />
+                            <Calendar className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
                             Book Your Session
                           </Button>
                         </div>
@@ -295,8 +303,18 @@ export function TrainersSection() {
               width: 100%;
             }
             .marquee-segment > .marquee-item {
-              flex: 0 0 33.333333%;
+              flex: 0 0 85%;
               min-width: 0;
+            }
+            @media (min-width: 640px) {
+              .marquee-segment > .marquee-item {
+                flex: 0 0 50%;
+              }
+            }
+            @media (min-width: 1024px) {
+              .marquee-segment > .marquee-item {
+                flex: 0 0 33.333333%;
+              }
             }
             @keyframes marquee-scroll {
               from {
@@ -319,12 +337,12 @@ export function TrainersSection() {
         </div>
 
         {trainers.length === 0 && (
-          <div className="text-center py-16">
-            <div className="bg-slate-50 rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-6">
-              <Search className="w-12 h-12 text-slate-400" />
+          <div className="text-center py-12 sm:py-16">
+            <div className="bg-slate-50 rounded-full w-16 h-16 sm:w-24 sm:h-24 flex items-center justify-center mx-auto mb-4 sm:mb-6">
+              <Search className="w-8 h-8 sm:w-12 sm:h-12 text-slate-400" />
             </div>
-            <h3 className="text-2xl font-semibold text-slate-900 mb-3">No trainers found</h3>
-            <p className="text-slate-600 mb-6 max-w-md mx-auto">
+            <h3 className="text-xl sm:text-2xl font-semibold text-slate-900 mb-2 sm:mb-3">No trainers found</h3>
+            <p className="text-slate-600 mb-4 sm:mb-6 max-w-md mx-auto text-sm sm:text-base px-4">
               We couldn't find any trainers matching your criteria. Try adjusting your search or removing some filters.
             </p>
           </div>

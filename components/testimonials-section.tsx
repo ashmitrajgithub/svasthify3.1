@@ -90,57 +90,56 @@ export function TestimonialsSection() {
   const column3 = testimonials.slice(6, 8).concat(testimonials.slice(0, 2))
 
   const TestimonialCard = ({ testimonial }: { testimonial: (typeof testimonials)[0] }) => (
-    <div className="bg-white/70 backdrop-blur-sm border border-green-200/50 p-6 rounded-3xl shadow-xl transition-transform duration-500 transform hover:scale-105 hover:bg-white/90 cursor-pointer">
-      <div className="flex items-center mb-4">
+    <div className="bg-white/70 backdrop-blur-sm border border-green-200/50 p-4 sm:p-5 lg:p-6 rounded-2xl sm:rounded-3xl shadow-xl transition-transform duration-500 transform hover:scale-105 hover:bg-white/90 cursor-pointer">
+      <div className="flex items-center mb-3 sm:mb-4">
         <img
           src={testimonial.image || "/placeholder.svg"}
           alt={testimonial.name}
-          className="w-14 h-14 rounded-full object-cover mr-4 border-2 border-green-400/70 shadow-md"
+          className="w-12 h-12 sm:w-14 sm:h-14 rounded-full object-cover mr-3 sm:mr-4 border-2 border-green-400/70 shadow-md"
         />
-        <div>
-          <p className="font-bold text-gray-800 text-lg">{testimonial.name}</p>
-          <p className="text-sm text-green-700 font-medium">{testimonial.profession}</p>
+        <div className="min-w-0 flex-1">
+          <p className="font-bold text-gray-800 text-base sm:text-lg truncate">{testimonial.name}</p>
+          <p className="text-xs sm:text-sm text-green-700 font-medium truncate">{testimonial.profession}</p>
         </div>
       </div>
       <div className="flex items-center mb-2">
         {[...Array(testimonial.rating)].map((_, i) => (
-          <Star key={i} className="w-5 h-5 text-yellow-500 fill-current mr-0.5" />
+          <Star key={i} className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-500 fill-current mr-0.5" />
         ))}
       </div>
-      <p className="text-gray-700 italic text-sm leading-relaxed">"{testimonial.testimonial}"</p>
+      <p className="text-gray-700 italic text-xs sm:text-sm leading-relaxed">"{testimonial.testimonial}"</p>
     </div>
   )
 
   return (
     <section
       id="testimonials"
-      className="py-20 px-4 sm:px-6 relative overflow-hidden bg-gradient-to-br from-green-100 via-white to-green-200"
+      className="py-12 sm:py-16 lg:py-20 px-3 sm:px-4 lg:px-6 relative overflow-hidden bg-gradient-to-br from-green-100 via-white to-green-200"
     >
       {/* Background decorative elements with a softer, more subtle effect */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(52,211,153,0.1),transparent_50%)] animate-pulse-slow"></div>
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(134,239,172,0.1),transparent_50%)] animate-pulse-slow"></div>
 
       <div className="container mx-auto max-w-7xl relative z-10 group">
-        <div className="text-center mb-8">
-          
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-black mb-4 leading-tight tracking-tight">
-          What Our <span className="bg-gradient-to-r from-green-800 to-green-800 bg-clip-text text-transparent">
-  Clients Say
-  </span>
-</h2>
-          
+        <div className="text-center mb-6 sm:mb-8 lg:mb-12">
+          <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-black mb-3 sm:mb-4 leading-tight tracking-tight px-4">
+            What Our{" "}
+            <span className="bg-gradient-to-r from-green-800 to-green-800 bg-clip-text text-transparent">
+              Clients Say
+            </span>
+          </h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 xl:gap-10">
           {/* Column 1 - Top to Bottom */}
-          <div className="overflow-hidden h-[45rem] rounded-3xl [mask-image:linear-gradient(to_bottom,transparent,white_20%,white_80%,transparent)] md:col-span-1 lg:col-span-1">
-            <div className="flex flex-col gap-8 group-hover:pause animate-scroll-t2b">
-              <div className="flex flex-col gap-8">
+          <div className="overflow-hidden h-[32rem] sm:h-[36rem] lg:h-[45rem] rounded-2xl sm:rounded-3xl [mask-image:linear-gradient(to_bottom,transparent,white_20%,white_80%,transparent)]">
+            <div className="flex flex-col gap-4 sm:gap-6 lg:gap-8 group-hover:pause animate-scroll-t2b">
+              <div className="flex flex-col gap-4 sm:gap-6 lg:gap-8">
                 {column1.map((testimonial) => (
                   <TestimonialCard key={`col1-${testimonial.id}`} testimonial={testimonial} />
                 ))}
               </div>
-              <div className="flex flex-col gap-8">
+              <div className="flex flex-col gap-4 sm:gap-6 lg:gap-8">
                 {column1.map((testimonial) => (
                   <TestimonialCard key={`col1-dup-${testimonial.id}`} testimonial={testimonial} />
                 ))}
@@ -148,15 +147,15 @@ export function TestimonialsSection() {
             </div>
           </div>
 
-          {/* Column 2 - Bottom to Top (hidden on mobile) */}
-          <div className="hidden md:block overflow-hidden h-[45rem] rounded-3xl [mask-image:linear-gradient(to_top,transparent,white_20%,white_80%,transparent)]">
-            <div className="flex flex-col gap-8 group-hover:pause animate-scroll-b2t">
-              <div className="flex flex-col gap-8">
+          {/* Column 2 - Bottom to Top */}
+          <div className="overflow-hidden h-[32rem] sm:h-[36rem] lg:h-[45rem] rounded-2xl sm:rounded-3xl [mask-image:linear-gradient(to_top,transparent,white_20%,white_80%,transparent)]">
+            <div className="flex flex-col gap-4 sm:gap-6 lg:gap-8 group-hover:pause animate-scroll-b2t">
+              <div className="flex flex-col gap-4 sm:gap-6 lg:gap-8">
                 {column2.map((testimonial) => (
                   <TestimonialCard key={`col2-${testimonial.id}`} testimonial={testimonial} />
                 ))}
               </div>
-              <div className="flex flex-col gap-8">
+              <div className="flex flex-col gap-4 sm:gap-6 lg:gap-8">
                 {column2.map((testimonial) => (
                   <TestimonialCard key={`col2-dup-${testimonial.id}`} testimonial={testimonial} />
                 ))}
@@ -164,7 +163,7 @@ export function TestimonialsSection() {
             </div>
           </div>
 
-          {/* Column 3 - Top to Bottom (hidden on mobile and tablet) */}
+          {/* Column 3 - Top to Bottom (hidden on mobile, shown on larger screens) */}
           <div className="hidden lg:block overflow-hidden h-[45rem] rounded-3xl [mask-image:linear-gradient(to_bottom,transparent,white_20%,white_80%,transparent)]">
             <div className="flex flex-col gap-8 group-hover:pause animate-scroll-t2b">
               <div className="flex flex-col gap-8">
@@ -213,6 +212,25 @@ export function TestimonialsSection() {
         
         .group:hover .group-hover\\:pause {
           animation-play-state: paused;
+        }
+
+        /* Added responsive animation speeds for better mobile performance */
+        @media (max-width: 640px) {
+          .animate-scroll-t2b {
+            animation: scroll-t2b 45s linear infinite;
+          }
+          
+          .animate-scroll-b2t {
+            animation: scroll-b2t 45s linear infinite;
+          }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .animate-scroll-t2b,
+          .animate-scroll-b2t,
+          .animate-pulse-slow {
+            animation: none;
+          }
         }
       `}</style>
     </section>

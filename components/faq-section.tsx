@@ -1,9 +1,8 @@
 "use client"
 
 import { useState } from "react"
-import { Plus, Search, HelpCircle, ArrowRight, Sparkles } from "lucide-react"
+import { Plus, HelpCircle, ArrowRight, Sparkles } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 
 const faqs = [
   {
@@ -106,7 +105,7 @@ export function FAQSection() {
   })
 
   return (
-    <section className="py-4 px-4 bg-gradient-to-br from-slate-50 via-white to-emerald-50/30 relative overflow-hidden">
+    <section className="py-8 sm:py-12 lg:py-16 px-3 sm:px-4 lg:px-6 bg-gradient-to-br from-slate-50 via-white to-emerald-50/30 relative overflow-hidden">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-emerald-100/40 to-teal-100/40 rounded-full blur-3xl"></div>
         <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-blue-100/40 to-emerald-100/40 rounded-full blur-3xl"></div>
@@ -115,52 +114,34 @@ export function FAQSection() {
 
       <div className="max-w-4xl mx-auto relative z-10">
         {/* Header */}
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-100/50 text-emerald-700 text-sm font-semibold mb-4 shadow-sm backdrop-blur-sm">
-            <Sparkles className="w-4 h-4" />
+        <div className="text-center mb-8 sm:mb-10 lg:mb-12">
+          <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-100/50 text-emerald-700 text-xs sm:text-sm font-semibold mb-3 sm:mb-4 shadow-sm backdrop-blur-sm">
+            <Sparkles className="w-3 h-3 sm:w-4 sm:h-4" />
             Frequently Asked Questions
           </div>
 
-          <h2 className="text-2xl md:text-4xl font-bold text-gray-900 mb-4 leading-tight tracking-tight">
-            Everything You   
-               <span className="bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 bg-clip-text text-transparent"> 
-               &nbsp; Need to Know
+          <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-3 sm:mb-4 leading-tight tracking-tight px-4">
+            Everything You
+            <span className="bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 bg-clip-text text-transparent">
+              &nbsp; Need to Know
             </span>
           </h2>
-         
-
-          
         </div>
 
-        {/* Search */}
-        {/* <div className="relative mb-8 max-w-2xl mx-auto">
-          <div className="relative group">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-emerald-500 transition-colors duration-200" />
-            <Input
-              type="text"
-              placeholder="Search for answers..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-12 pr-4 py-3 text-base border-2 border-gray-200/50 rounded-2xl focus:border-emerald-400 focus:ring-4 focus:ring-emerald-100/50 bg-white/80 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 placeholder:text-gray-400 font-medium"
-            />
-            <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-emerald-500/5 to-teal-500/5 opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
-          </div>
-        </div> */}
-
         {/* Filter Tags */}
-        <div className="flex flex-wrap justify-center gap-2 mb-8">
+        <div className="flex flex-wrap justify-center gap-2 mb-6 sm:mb-8 px-2">
           {filterCategories.map((category) => (
             <button
               key={category.id}
               onClick={() => setActiveFilter(category.id)}
-              className={`px-4 py-2 rounded-xl font-semibold text-sm transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-xl ${
+              className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl font-semibold text-xs sm:text-sm transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-xl ${
                 activeFilter === category.id
                   ? `bg-gradient-to-r ${category.color} text-white shadow-lg`
                   : "bg-white/80 backdrop-blur-sm text-gray-600 hover:text-gray-800 border border-gray-200/50 hover:border-gray-300/50"
               }`}
             >
               {category.label}
-              <span className="ml-2 px-2 py-0.5 rounded-full text-xs bg-white/20">
+              <span className="ml-1.5 sm:ml-2 px-1.5 sm:px-2 py-0.5 rounded-full text-xs bg-white/20">
                 {category.id === "all"
                   ? faqs.length
                   : faqs.filter((faq) => faq.category.toLowerCase() === category.id.toLowerCase()).length}
@@ -170,35 +151,35 @@ export function FAQSection() {
         </div>
 
         {/* FAQ Items */}
-        <div className="space-y-3">
+        <div className="space-y-2 sm:space-y-3">
           {filteredFAQs.map((faq, index) => (
             <div
               key={faq.id}
-              className="group bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-2xl overflow-hidden hover:border-emerald-200 hover:shadow-2xl hover:shadow-emerald-100/20 transition-all duration-500 transform hover:-translate-y-1"
+              className="group bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-xl sm:rounded-2xl overflow-hidden hover:border-emerald-200 hover:shadow-2xl hover:shadow-emerald-100/20 transition-all duration-500 transform hover:-translate-y-1"
               style={{ animationDelay: `${index * 100}ms` }}
             >
               <button
                 onClick={() => toggleItem(faq.id)}
-                className="w-full px-6 py-5 text-left flex items-center justify-between hover:bg-gradient-to-r hover:from-emerald-50/50 hover:to-teal-50/50 transition-all duration-300"
+                className="w-full px-4 sm:px-6 py-4 sm:py-5 text-left flex items-center justify-between hover:bg-gradient-to-r hover:from-emerald-50/50 hover:to-teal-50/50 transition-all duration-300"
               >
-                <div className="flex-1 pr-4">
-                  <div className="flex items-center gap-3 mb-2">
-                    <span className="px-3 py-1 text-xs font-semibold bg-emerald-100 text-emerald-700 rounded-full">
+                <div className="flex-1 pr-3 sm:pr-4">
+                  <div className="flex items-center gap-2 sm:gap-3 mb-1.5 sm:mb-2">
+                    <span className="px-2 sm:px-3 py-0.5 sm:py-1 text-xs font-semibold bg-emerald-100 text-emerald-700 rounded-full">
                       {faq.category}
                     </span>
                   </div>
-                  <h3 className="text-lg font-bold text-gray-900 group-hover:text-emerald-700 transition-colors duration-300 leading-tight">
+                  <h3 className="text-base sm:text-lg font-bold text-gray-900 group-hover:text-emerald-700 transition-colors duration-300 leading-tight">
                     {faq.question}
                   </h3>
                 </div>
                 <div
-                  className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-500 shadow-lg ${
+                  className={`w-8 h-8 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center transition-all duration-500 shadow-lg ${
                     openItems.includes(faq.id)
                       ? "bg-gradient-to-br from-emerald-500 to-teal-600 text-white rotate-45 shadow-emerald-200"
                       : "bg-gradient-to-br from-gray-100 to-gray-200 text-gray-600 group-hover:from-emerald-100 group-hover:to-teal-100 group-hover:text-emerald-600 group-hover:shadow-emerald-100"
                   }`}
                 >
-                  <Plus className="w-4 h-4" />
+                  <Plus className="w-3 h-3 sm:w-4 sm:h-4" />
                 </div>
               </button>
 
@@ -207,10 +188,10 @@ export function FAQSection() {
                   openItems.includes(faq.id) ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
                 }`}
               >
-                <div className="px-6 pb-5">
-                  <div className="border-t border-gradient-to-r from-emerald-100 to-teal-100 pt-4 relative">
-                    <div className="absolute top-0 left-0 w-16 h-0.5 bg-gradient-to-r from-emerald-400 to-teal-400 rounded-full"></div>
-                    <p className="text-gray-700 leading-relaxed text-base font-medium">{faq.answer}</p>
+                <div className="px-4 sm:px-6 pb-4 sm:pb-5">
+                  <div className="border-t border-gradient-to-r from-emerald-100 to-teal-100 pt-3 sm:pt-4 relative">
+                    <div className="absolute top-0 left-0 w-12 sm:w-16 h-0.5 bg-gradient-to-r from-emerald-400 to-teal-400 rounded-full"></div>
+                    <p className="text-gray-700 leading-relaxed text-sm sm:text-base font-medium">{faq.answer}</p>
                   </div>
                 </div>
               </div>
@@ -220,26 +201,26 @@ export function FAQSection() {
 
         {/* No Results */}
         {filteredFAQs.length === 0 && (
-          <div className="text-center py-12">
-            <div className="w-16 h-16 bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-              <HelpCircle className="w-8 h-8 text-gray-400" />
+          <div className="text-center py-8 sm:py-12">
+            <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl sm:rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-lg">
+              <HelpCircle className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400" />
             </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-2">No questions found</h3>
-            <p className="text-gray-600 mb-6 text-base">
+            <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2">No questions found</h3>
+            <p className="text-gray-600 mb-4 sm:mb-6 text-sm sm:text-base px-4">
               Try adjusting your search terms or browse all questions below.
             </p>
-            <div className="flex gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
               <Button
                 onClick={() => setSearchQuery("")}
                 variant="outline"
-                className="rounded-xl px-6 py-2 border-2 hover:bg-emerald-50 hover:border-emerald-200 transition-all duration-300"
+                className="rounded-xl px-4 sm:px-6 py-2 border-2 hover:bg-emerald-50 hover:border-emerald-200 transition-all duration-300 text-sm sm:text-base"
               >
                 Clear Search
               </Button>
               <Button
                 onClick={() => setActiveFilter("all")}
                 variant="outline"
-                className="rounded-xl px-6 py-2 border-2 hover:bg-emerald-50 hover:border-emerald-200 transition-all duration-300"
+                className="rounded-xl px-4 sm:px-6 py-2 border-2 hover:bg-emerald-50 hover:border-emerald-200 transition-all duration-300 text-sm sm:text-base"
               >
                 Show All Categories
               </Button>
@@ -248,24 +229,24 @@ export function FAQSection() {
         )}
 
         {/* CTA */}
-        <div className="text-center mt-16">
-          <div className="bg-gradient-to-br from-emerald-50 via-white to-teal-50 rounded-2xl p-10 border border-emerald-200/50 shadow-2xl shadow-emerald-100/20 backdrop-blur-sm relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-teal-500/5 rounded-2xl"></div>
+        <div className="text-center mt-12 sm:mt-16">
+          <div className="bg-gradient-to-br from-emerald-50 via-white to-teal-50 rounded-xl sm:rounded-2xl p-6 sm:p-8 lg:p-10 border border-emerald-200/50 shadow-2xl shadow-emerald-100/20 backdrop-blur-sm relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-teal-500/5 rounded-xl sm:rounded-2xl"></div>
             <div className="relative z-10">
-              <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-2xl shadow-emerald-200/50">
-                <HelpCircle className="w-8 h-8 text-white" />
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl sm:rounded-2xl flex items-center justify-center mx-auto mb-4 sm:mb-6 shadow-2xl shadow-emerald-200/50">
+                <HelpCircle className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
               </div>
 
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Still have questions?</h3>
+              <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3 sm:mb-4">Still have questions?</h3>
 
-              <p className="text-gray-600 mb-8 max-w-lg mx-auto text-base leading-relaxed">
+              <p className="text-gray-600 mb-6 sm:mb-8 max-w-lg mx-auto text-sm sm:text-base leading-relaxed px-4">
                 Can't find the answer you're looking for? Our wellness experts are here to provide personalized
                 guidance.
               </p>
 
-              <Button className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white rounded-xl px-8 py-3 font-semibold text-base group shadow-2xl shadow-emerald-200/50 hover:shadow-emerald-300/50 transition-all duration-300 transform hover:-translate-y-1">
+              <Button className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white rounded-xl px-6 sm:px-8 py-2.5 sm:py-3 font-semibold text-sm sm:text-base group shadow-2xl shadow-emerald-200/50 hover:shadow-emerald-300/50 transition-all duration-300 transform hover:-translate-y-1">
                 Get Personal Support
-                <ArrowRight className="w-5 h-5 ml-3 group-hover:translate-x-2 transition-transform duration-300" />
+                <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2 sm:ml-3 group-hover:translate-x-2 transition-transform duration-300" />
               </Button>
             </div>
           </div>

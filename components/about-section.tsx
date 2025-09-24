@@ -74,7 +74,7 @@ const AnimatedCounter = ({
   }, [value, duration, isVisible])
 
   return (
-    <div className="text-5xl font-bold mb-2 tabular-nums">
+    <div className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-2 tabular-nums">
       {count.toLocaleString()}
       {suffix}
     </div>
@@ -113,20 +113,20 @@ export function AboutSection() {
   const { ref, isVisible } = useIntersectionObserver(0.3)
 
   return (
-    <section id="about" className="py-20 bg-gradient-to-br from-white via-emerald-50/30 to-white">
-      <div className="max-w-6xl mx-auto px-8 sm:px-12 lg:px-16">
+    <section id="about" className="py-12 sm:py-16 lg:py-20 bg-gradient-to-br from-white via-emerald-50/30 to-white">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
         <div
           ref={ref}
-          className="bg-gradient-to-r from-emerald-500 to-teal-600 rounded-3xl p-12 mb-20 text-white shadow-2xl transform transition-all duration-1000 hover:shadow-3xl hover:scale-[1.02]"
+          className="bg-gradient-to-r from-emerald-500 to-teal-600 rounded-2xl sm:rounded-3xl p-6 sm:p-8 lg:p-12 mb-12 sm:mb-16 lg:mb-20 text-white shadow-2xl transform transition-all duration-1000 hover:shadow-3xl hover:scale-[1.02]"
         >
-          <div className="text-center mb-8">
-            <h3 className="text-3xl font-bold mb-4 animate-fade-in">Our Impact in Numbers</h3>
-            <p className="text-emerald-100 text-lg animate-fade-in animation-delay-200">
+          <div className="text-center mb-6 sm:mb-8">
+            <h3 className="text-2xl sm:text-3xl font-bold mb-3 sm:mb-4 animate-fade-in">Our Impact in Numbers</h3>
+            <p className="text-emerald-100 text-base sm:text-lg animate-fade-in animation-delay-200 px-4">
               Celebrating the wellness journey we've shared together
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8">
             {statsData.map((stat, index) => {
               const IconComponent = stat.icon
               return (
@@ -138,8 +138,8 @@ export function AboutSection() {
                     animation: isVisible ? "fadeInUp 0.8s ease-out forwards" : "none",
                   }}
                 >
-                  <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-white/30 transition-all duration-300 group-hover:rotate-6">
-                    <IconComponent className="w-8 h-8 text-white group-hover:scale-110 transition-transform duration-300" />
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white/20 rounded-xl sm:rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4 group-hover:bg-white/30 transition-all duration-300 group-hover:rotate-6">
+                    <IconComponent className="w-6 h-6 sm:w-8 sm:h-8 text-white group-hover:scale-110 transition-transform duration-300" />
                   </div>
 
                   <AnimatedCounter
@@ -149,9 +149,9 @@ export function AboutSection() {
                     duration={2000 + index * 200}
                   />
 
-                  <div className="text-emerald-100 font-medium text-lg mb-2">{stat.label}</div>
+                  <div className="text-emerald-100 font-medium text-base sm:text-lg mb-2">{stat.label}</div>
 
-                  <div className="text-emerald-200/80 text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <div className="text-emerald-200/80 text-xs sm:text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 px-2">
                     {stat.description}
                   </div>
                 </div>
@@ -159,11 +159,11 @@ export function AboutSection() {
             })}
           </div>
 
-          <div className="mt-8 flex justify-center space-x-2">
+          <div className="mt-6 sm:mt-8 flex justify-center space-x-1.5 sm:space-x-2">
             {statsData.map((_, index) => (
               <div
                 key={index}
-                className="w-2 h-2 rounded-full bg-white/30 animate-pulse"
+                className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-white/30 animate-pulse"
                 style={{
                   animationDelay: `${index * 300}ms`,
                   animationDuration: "2s",
@@ -196,6 +196,13 @@ export function AboutSection() {
 
         .animation-delay-200 {
           animation-delay: 200ms;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .animate-fade-in,
+          [style*="animation: fadeInUp"] {
+            animation: none;
+          }
         }
       `}</style>
     </section>
