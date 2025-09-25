@@ -1,20 +1,17 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useSearchParams } from "next/navigation"
 import {
-  Clock,
   User,
   MapPin,
   Star,
   ArrowLeft,
-  SortAsc,
   CheckCircle,
   CreditCard,
   Shield,
   Search,
   X,
-  RotateCw,
   Check,
   BadgeCheck,
   Briefcase,
@@ -82,24 +79,18 @@ interface BookingData {
   postalCode?: string
 }
 
-// Using OpenStreetMap Nominatim API for free address suggestions
-const fetchAddressSuggestions = async (query: string): Promise<string[]> => {
+const fetchAddressSuggestions = async (query: string): Promise<any[]> => {
   try {
     console.log("[v0] Fetching address suggestions for:", query)
 
-    // Delhi NCR bounding box coordinates (more precise)
-    // Southwest: 28.4089, 76.8473 | Northeast: 28.8842, 77.3489
-    const boundingBox = "76.8473,28.4089,77.3489,28.8842"
+    // Use our server-side API route instead of direct Google Places API call
+    const url = `/api/places?query=${encodeURIComponent(query)}`
 
-    // Use a more reliable endpoint with better parameters
-    const url = `https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&limit=10&countrycodes=in&viewbox=${boundingBox}&bounded=1&q=${encodeURIComponent(query)}&city=Delhi&city=Gurgaon&city=Noida&city=Ghaziabad&city=Faridabad`
-
-    console.log("[v0] API URL:", url)
+    console.log("[v0] API route URL:", url)
 
     const response = await fetch(url, {
       method: "GET",
       headers: {
-        "User-Agent": "AddressAutocomplete/1.0",
         Accept: "application/json",
       },
     })
@@ -111,119 +102,51 @@ const fetchAddressSuggestions = async (query: string): Promise<string[]> => {
     }
 
     const data = await response.json()
-    console.log("[v0] Raw API response:", data)
+    console.log("[v0] API response:", data)
 
-    // Filter and format results to only include Delhi NCR locations
-    const delhiNCRLocations = data.filter((item: any) => {
-      const address = item.address || {}
-      const state = address.state?.toLowerCase() || ""
-      const city = address.city?.toLowerCase() || address.town?.toLowerCase() || address.village?.toLowerCase() || ""
-      const district = address.state_district?.toLowerCase() || ""
-      const displayName = item.display_name?.toLowerCase() || ""
+    if (data.error) {
+      throw new Error(data.error)
+    }
 
-      // Check if location is in Delhi NCR
-      const isDelhi = state.includes("delhi") || displayName.includes("delhi")
-      const isHaryana =
-        (state.includes("haryana") || displayName.includes("haryana")) &&
-        (city.includes("gurgaon") ||
-          city.includes("gurugram") ||
-          city.includes("faridabad") ||
-          displayName.includes("gurgaon") ||
-          displayName.includes("gurugram") ||
-          displayName.includes("faridabad"))
-      const isUP =
-        (state.includes("uttar pradesh") || displayName.includes("uttar pradesh")) &&
-        (city.includes("noida") ||
-          city.includes("greater noida") ||
-          city.includes("ghaziabad") ||
-          displayName.includes("noida") ||
-          displayName.includes("ghaziabad"))
-
-      return isDelhi || isHaryana || isUP
-    })
-
-    console.log("[v0] Filtered Delhi NCR locations:", delhiNCRLocations.length)
-
-    const formattedSuggestions = delhiNCRLocations
-      .map((item: any) => {
-        // Format the address nicely for Delhi NCR
-        const address = item.address || {}
-        const parts = []
-
-        // Add house number and road
-        if (address.house_number && address.road) {
-          parts.push(`${address.house_number} ${address.road}`)
-        } else if (address.road) {
-          parts.push(address.road)
-        }
-
-        // Add neighbourhood or suburb
-        if (address.neighbourhood) {
-          parts.push(address.neighbourhood)
-        } else if (address.suburb) {
-          parts.push(address.suburb)
-        }
-
-        // Add city - prioritize specific NCR cities
-        let cityName = ""
-        if (address.city) {
-          cityName = address.city
-        } else if (address.town) {
-          cityName = address.town
-        } else if (address.village) {
-          cityName = address.village
-        }
-
-        // Normalize city names for better display
-        if (cityName.toLowerCase().includes("gurgaon")) {
-          cityName = "Gurgaon"
-        } else if (cityName.toLowerCase().includes("gurugram")) {
-          cityName = "Gurugram"
-        } else if (cityName.toLowerCase().includes("noida")) {
-          cityName = "Noida"
-        } else if (cityName.toLowerCase().includes("greater noida")) {
-          cityName = "Greater Noida"
-        } else if (cityName.toLowerCase().includes("ghaziabad")) {
-          cityName = "Ghaziabad"
-        } else if (cityName.toLowerCase().includes("faridabad")) {
-          cityName = "Faridabad"
-        } else if (cityName.toLowerCase().includes("delhi")) {
-          cityName = "New Delhi"
-        }
-
-        if (cityName) {
-          parts.push(cityName)
-        }
-
-        // Add state for clarity
-        if (address.state && !address.state.toLowerCase().includes("delhi")) {
-          parts.push(address.state)
-        } else if (cityName !== "New Delhi") {
-          parts.push("Delhi NCR")
-        }
-
-        const formatted = parts.join(", ") || item.display_name
-        return formatted
-      })
-      .filter((suggestion, index, self) => self.indexOf(suggestion) === index) // Remove duplicates
-      .slice(0, 8) // Limit to 8 suggestions
-
-    console.log("[v0] Final formatted suggestions:", formattedSuggestions)
-    return formattedSuggestions
+    console.log("[v0] Final formatted suggestions:", data.suggestions)
+    return data.suggestions || []
   } catch (error) {
     console.error("[v0] Error fetching address suggestions:", error)
 
-    // Fallback to some common Delhi NCR locations if API fails
     const fallbackSuggestions = [
-      "Connaught Place, New Delhi, Delhi NCR",
-      "Sector 18, Noida, Delhi NCR",
-      "Cyber City, Gurgaon, Delhi NCR",
-      "Karol Bagh, New Delhi, Delhi NCR",
-      "Lajpat Nagar, New Delhi, Delhi NCR",
-      "Rajouri Garden, New Delhi, Delhi NCR",
-    ].filter((suggestion) => suggestion.toLowerCase().includes(query.toLowerCase()))
-
+      { description: "Connaught Place, New Delhi, Delhi, India", place_id: null },
+      { description: "Sector 18, Noida, Uttar Pradesh, India", place_id: null },
+      { description: "Cyber City, Gurgaon, Haryana, India", place_id: null },
+      { description: "Khan Market, New Delhi, Delhi, India", place_id: null },
+      { description: "Sector 29, Gurgaon, Haryana, India", place_id: null },
+      { description: "Greater Noida, Uttar Pradesh, India", place_id: null },
+    ]
     return fallbackSuggestions
+  }
+}
+
+const fetchPlaceDetails = async (placeId: string) => {
+  try {
+    console.log("[v0] Fetching place details for:", placeId)
+
+    const response = await fetch(`/api/places/details?place_id=${encodeURIComponent(placeId)}`, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+      },
+    })
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
+
+    const data = await response.json()
+    console.log("[v0] Place details response:", data)
+
+    return data
+  } catch (error) {
+    console.error("[v0] Error fetching place details:", error)
+    return null
   }
 }
 
@@ -401,7 +324,7 @@ export default function BookingPage() {
   const searchParams = useSearchParams()
   const serviceTitle = searchParams.get("service")
 
-  const [currentStep, setCurrentStep] = useState(0)
+  const [currentStep, setCurrentStep] = useState(1) // Start at Step 1
   const [selectedService, setSelectedService] = useState<Service | null>(null)
   const [selectedTrainer, setSelectedTrainer] = useState<Trainer | null>(null)
   const [selectedDate, setSelectedDate] = useState("")
@@ -409,7 +332,7 @@ export default function BookingPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [bookingComplete, setBookingComplete] = useState(false)
 
-  const [addressSuggestions, setAddressSuggestions] = useState<string[]>([])
+  const [addressSuggestions, setAddressSuggestions] = useState<any[]>([])
   const [showAddressSuggestions, setShowAddressSuggestions] = useState(false)
   const [isLoadingAddresses, setIsLoadingAddresses] = useState(false)
 
@@ -421,6 +344,12 @@ export default function BookingPage() {
   })
   const [serviceSortBy, setServiceSortBy] = useState("rating")
   const [serviceSearchQuery, setServiceSearchQuery] = useState("")
+
+  // State for the new trainer filters
+  const [searchQuery, setSearchQuery] = useState("")
+  const [selectedSpecialization, setSelectedSpecialization] = useState("")
+  const [selectedExperience, setSelectedExperience] = useState("")
+  const [selectedRating, setSelectedRating] = useState("")
 
   const [trainerFilters, setTrainerFilters] = useState({
     specialization: "all",
@@ -436,6 +365,8 @@ export default function BookingPage() {
 
   const [calendarMonth, setCalendarMonth] = useState<Date>(new Date())
   const isSameDay = (a: Date, b: Date) => a.toDateString() === b.toDateString()
+
+  const timeSlotsRef = useRef<HTMLDivElement>(null)
 
   const [bookingData, setBookingData] = useState<BookingData>({
     trainer: null,
@@ -455,7 +386,6 @@ export default function BookingPage() {
   })
 
   const steps = [
-    { id: 0, title: "Service" },
     { id: 1, title: "Trainer" },
     { id: 2, title: "Schedule" },
     { id: 3, title: "Payment" },
@@ -507,69 +437,9 @@ export default function BookingPage() {
     }
   }
 
-  useEffect(() => {
-    const filtered = services.filter((service) => {
-      const categoryMatch = serviceFilters.category === "all" || service.category === serviceFilters.category
-      const difficultyMatch = serviceFilters.difficulty === "all" || service.difficulty === serviceFilters.difficulty
-      const searchMatch =
-        serviceSearchQuery === "" ||
-        service.title.toLowerCase().includes(serviceSearchQuery.toLowerCase()) ||
-        service.description.toLowerCase().includes(serviceSearchQuery.toLowerCase())
-
-      const priceMatch =
-        serviceFilters.priceRange === "all" ||
-        (() => {
-          const price = Number.parseInt(service.price.replace(/[^0-9]/g, ""))
-          switch (serviceFilters.priceRange) {
-            case "low":
-              return price < 1000
-            case "medium":
-              return price >= 1000 && price < 1500
-            case "high":
-              return price >= 1500
-            default:
-              return true
-          }
-        })()
-
-      const ratingMatch =
-        serviceFilters.rating === "all" ||
-        (() => {
-          switch (serviceFilters.rating) {
-            case "4+":
-              return service.rating >= 4
-            case "4.5+":
-              return service.rating >= 4.5
-            case "5":
-              return service.rating === 5
-            default:
-              return true
-          }
-        })()
-
-      return categoryMatch && difficultyMatch && searchMatch && priceMatch && ratingMatch
-    })
-
-    // Sort services
-    filtered.sort((a, b) => {
-      switch (serviceSortBy) {
-        case "price-low":
-          return Number.parseInt(a.price.replace(/[^0-9]/g, "")) - Number.parseInt(b.price.replace(/[^0-9]/g, ""))
-        case "price-high":
-          return Number.parseInt(b.price.replace(/[^0-9]/g, "")) - Number.parseInt(a.price.replace(/[^0-9]/g, ""))
-        case "duration":
-          return Number.parseInt(a.duration) - Number.parseInt(b.duration)
-        case "rating":
-          return b.rating - a.rating
-        case "name":
-          return a.title.localeCompare(b.title)
-        default:
-          return 0
-      }
-    })
-
-    setFilteredServices(filtered)
-  }, [serviceFilters, serviceSortBy, serviceSearchQuery])
+  // --- REBUILT USEEFFECT FOR FILTERS AND SORTING ---
+  // The service filters and sort logic is removed because the section is gone.
+  // The trainer filters and sort logic remains.
 
   useEffect(() => {
     const filtered = trainers.filter((trainer) => {
@@ -644,13 +514,50 @@ export default function BookingPage() {
     setFilteredTrainers(filtered)
   }, [trainerFilters, trainerSortBy, trainerSearchQuery])
 
+  // Effect for the new trainer filters
+  useEffect(() => {
+    const filtered = trainers.filter((trainer) => {
+      const specializationMatch =
+        !selectedSpecialization || trainer.specialization.toLowerCase().includes(selectedSpecialization.toLowerCase())
+      const experienceMatch =
+        !selectedExperience || trainer.experience.toLowerCase().includes(selectedExperience.toLowerCase())
+      const ratingMatch =
+        !selectedRating ||
+        (() => {
+          const rating = Number.parseFloat(trainer.rating.toString())
+          if (selectedRating === "4.5+") return rating >= 4.5
+          if (selectedRating === "4.0+") return rating >= 4.0
+          if (selectedRating === "3.5+") return rating >= 3.5
+          return true
+        })()
+      const searchMatch =
+        !searchQuery ||
+        trainer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        trainer.specialization.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        trainer.bio.toLowerCase().includes(searchQuery.toLowerCase())
+
+      return specializationMatch && experienceMatch && ratingMatch && searchMatch
+    })
+
+    // Sort trainers (you might want to add sorting logic here too if needed)
+    filtered.sort((a, b) => {
+      // Example: Sort by rating descending
+      if (trainerSortBy === "rating") {
+        return b.rating - a.rating
+      }
+      // Add other sorting options if necessary
+      return 0
+    })
+
+    setFilteredTrainers(filtered)
+  }, [searchQuery, selectedSpecialization, selectedExperience, selectedRating, trainerSortBy])
+
   // Auto-select service if coming from URL
   useEffect(() => {
     if (serviceTitle) {
       const service = services.find((s) => s.title === serviceTitle)
       if (service) {
         setSelectedService(service)
-        setCurrentStep(1)
       }
     }
   }, [serviceTitle])
@@ -670,8 +577,6 @@ export default function BookingPage() {
 
   const canProceedToNextStep = () => {
     switch (currentStep) {
-      case 0:
-        return selectedService !== null
       case 1:
         return selectedTrainer !== null
       case 2:
@@ -707,6 +612,8 @@ export default function BookingPage() {
     const startOfMonth = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth(), 1)
     const endOfMonth = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() + 1, 0)
     const startDate = new Date(startOfMonth)
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
 
     // Find the first day of the week for the start of the month
     while (startDate.getDay() !== 0) {
@@ -742,17 +649,6 @@ export default function BookingPage() {
     })
   }
 
-  const handleResetServiceFilters = () => {
-    setServiceFilters({
-      category: "all",
-      difficulty: "all",
-      priceRange: "all",
-      rating: "all",
-    })
-    setServiceSearchQuery("")
-    setServiceSortBy("rating")
-  }
-
   const handleResetTrainerFilters = () => {
     setTrainerFilters({
       specialization: "all",
@@ -762,6 +658,20 @@ export default function BookingPage() {
     })
     setTrainerSearchQuery("")
     setTrainerSortBy("rating")
+  }
+
+  const handleDateSelection = (date: Date) => {
+    setSelectedDate(formatDate(date))
+
+    // Auto-scroll to time slots section after a short delay
+    setTimeout(() => {
+      if (timeSlotsRef.current) {
+        timeSlotsRef.current.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        })
+      }
+    }, 100)
   }
 
   const handleAddressChange = async (value: string) => {
@@ -788,38 +698,57 @@ export default function BookingPage() {
     }
   }
 
-  const selectAddressSuggestion = (suggestion: string) => {
-    const parts = suggestion.split(", ")
-    let addressLine1 = suggestion
+  const selectAddressSuggestion = async (suggestion: any) => {
+    const description = typeof suggestion === "string" ? suggestion : suggestion.description
+    const placeId = typeof suggestion === "object" ? suggestion.place_id : null
+
+    const parts = description.split(", ")
+    let addressLine1 = description
     let city = ""
     let state = ""
 
     if (parts.length >= 3) {
-      // Format: "Location Name, Area/Sector, City, State"
-      addressLine1 = parts.slice(0, -2).join(", ") // Everything except last 2 parts
-      city = parts[parts.length - 2] // Second to last part
-      state = parts[parts.length - 1] // Last part
+      // Google Places format: "Street, Area, City, State, Country"
+      addressLine1 = parts.slice(0, -3).join(", ") // Everything except last 3 parts (City, State, Country)
+      city = parts[parts.length - 3] // Third to last part (City)
+      state = parts[parts.length - 2] // Second to last part (State)
     } else if (parts.length === 2) {
       // Format: "Location, City"
       addressLine1 = parts[0]
       city = parts[1]
     }
 
-    // Attempt to map common city names to state values
+    // Map state names to lowercase with hyphens
     let mappedState = ""
-    const lowerCity = city.toLowerCase()
-    if (lowerCity.includes("delhi") || lowerCity === "new delhi") {
+    const lowerState = state.toLowerCase()
+    if (lowerState.includes("delhi")) {
       mappedState = "delhi"
-    } else if (lowerCity.includes("gurgaon") || lowerCity.includes("gurugram")) {
+    } else if (lowerState.includes("haryana")) {
       mappedState = "haryana"
-    } else if (lowerCity.includes("noida") || lowerCity.includes("greater noida") || lowerCity.includes("ghaziabad")) {
-      mappedState = "uttar pradesh"
-    } else if (lowerCity.includes("faridabad")) {
-      mappedState = "haryana"
+    } else if (lowerState.includes("uttar-pradesh")) {
+      mappedState = "uttar-pradesh"
+    } else if (lowerState.includes("punjab")) {
+      mappedState = "punjab"
+    } else if (lowerState.includes("rajasthan")) {
+      mappedState = "rajasthan"
     } else {
-      // Fallback to the state part if available and not 'Delhi NCR'
-      if (state && !state.toLowerCase().includes("delhi ncr")) {
-        mappedState = state.toLowerCase().replace(/\s+/g, "-")
+      mappedState = state.toLowerCase().replace(/\s+/g, "-")
+    }
+
+    let postalCode = ""
+    if (placeId) {
+      console.log("[v0] Fetching postal code for place:", placeId)
+      const placeDetails = await fetchPlaceDetails(placeId)
+      if (placeDetails && placeDetails.postal_code) {
+        postalCode = placeDetails.postal_code
+        console.log("[v0] Auto-filled postal code:", postalCode)
+
+        // Also update city and state from place details if available
+        if (placeDetails.city) city = placeDetails.city
+        if (placeDetails.state) {
+          const detailState = placeDetails.state.toLowerCase().replace(/\s+/g, "-")
+          mappedState = detailState
+        }
       }
     }
 
@@ -827,9 +756,12 @@ export default function BookingPage() {
       ...bookingData,
       addressLine1: addressLine1,
       city: city,
-      state: mappedState, // Use the mapped state
+      state: mappedState,
+      postalCode: postalCode, // Auto-populated postal code
     })
+
     setShowAddressSuggestions(false)
+    setAddressSuggestions([])
   }
 
   if (bookingComplete) {
@@ -884,11 +816,24 @@ export default function BookingPage() {
       <div className="sticky top-0 z-20 w-full bg-white/80 backdrop-blur-sm border-b border-green-200 shadow-sm">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center space-x-2 text-gray-700 hover:text-green-600 transition-colors">
+            <button
+              onClick={() => {
+                if (currentStep > 1) {
+                  // Start navigation from step 1
+                  setCurrentStep(currentStep - 1)
+                } else {
+                  window.location.href = "/"
+                }
+              }}
+              className="flex items-center space-x-2 text-gray-700 hover:text-green-600 transition-colors"
+            >
               <ArrowLeft className="w-5 h-5" />
-              <span className="font-semibold">Back to Home</span>
-            </Link>
-            <h1 className="text-2xl font-bold text-gray-800">Book Your Session</h1>
+              <span className="font-semibold">{currentStep > 1 ? "Back" : "Back to Home"}</span>
+            </button>
+            <h1 className="text-2xl font-bold text-gray-800">
+  Book Your <span className="text-green-600">Session</span>
+</h1>
+
             <div className="w-24"></div>
           </div>
         </div>
@@ -932,352 +877,91 @@ export default function BookingPage() {
 
         {/* Step-based Content */}
         <div className="bg-white/60 backdrop-blur-sm border border-green-100/80 rounded-2xl p-4 md:p-8">
-          {/* Step 0: Select Service */}
-          {currentStep === 0 && (
-            <div className="space-y-8">
-              <div className="text-center">
-                <h2 className="text-3xl font-bold text-gray-800 mb-2">Choose Your Wellness Service</h2>
-                <p className="text-gray-600 text-lg">Select from our range of certified wellness programs</p>
-              </div>
-
-              {/* REBUILT: Sticky & Compact Service Filter Toolbar */}
-              <div className="sticky top-16 z-10 bg-white/90 backdrop-blur-lg rounded-2xl p-4 border border-green-200 shadow-lg shadow-green-500/10 space-y-4">
-                <div className="flex flex-col md:flex-row gap-3">
-                  <div className="relative flex-1">
-                    <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
-                    <Input
-                      placeholder="Search services by name..."
-                      value={serviceSearchQuery}
-                      onChange={(e) => setServiceSearchQuery(e.target.value)}
-                      className="pl-11 w-full h-12 bg-white border-gray-200 rounded-lg shadow-sm hover:border-green-300 focus:ring-1 focus:ring-green-500 focus:border-green-500 transition-colors"
-                    />
-                    {serviceSearchQuery && (
-                      <button
-                        onClick={() => setServiceSearchQuery("")}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                      >
-                        <X className="w-5 h-5" />
-                      </button>
-                    )}
-                  </div>
-                  <Select
-                    value={serviceFilters.category}
-                    onValueChange={(value) => setServiceFilters({ ...serviceFilters, category: value })}
-                  >
-                    <SelectTrigger className="h-12 bg-white border-gray-200 rounded-lg shadow-sm text-gray-600 md:w-[150px]">
-                      <SelectValue placeholder="Category" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Categories</SelectItem>
-                      <SelectItem value="yoga">Yoga</SelectItem>
-                      <SelectItem value="meditation">Meditation</SelectItem>
-                      <SelectItem value="coaching">Coaching</SelectItem>
-                      <SelectItem value="consultation">Consultation</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <Select
-                    value={serviceFilters.difficulty}
-                    onValueChange={(value) => setServiceFilters({ ...serviceFilters, difficulty: value })}
-                  >
-                    <SelectTrigger className="h-12 bg-white border-gray-200 rounded-lg shadow-sm text-gray-600 md:w-[150px]">
-                      <SelectValue placeholder="Difficulty" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Levels</SelectItem>
-                      <SelectItem value="beginner">Beginner</SelectItem>
-                      <SelectItem value="intermediate">Intermediate</SelectItem>
-                      <SelectItem value="advanced">Advanced</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <Select
-                    value={serviceFilters.priceRange}
-                    onValueChange={(value) => setServiceFilters({ ...serviceFilters, priceRange: value })}
-                  >
-                    <SelectTrigger className="h-12 bg-white border-gray-200 rounded-lg shadow-sm text-gray-600 md:w-[150px]">
-                      <SelectValue placeholder="Price" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Prices</SelectItem>
-                      <SelectItem value="low">Under ₹1,000</SelectItem>
-                      <SelectItem value="medium">₹1,000 - ₹1,500</SelectItem>
-                      <SelectItem value="high">Above ₹1,500</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="flex flex-col sm:flex-row justify-between items-center pt-3 border-t border-green-100/80">
-                  <div className="text-sm text-gray-600 mb-2 sm:mb-0">
-                    Showing <span className="font-bold text-green-600">{filteredServices.length}</span> of{" "}
-                    {services.length} services
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Select value={serviceSortBy} onValueChange={setServiceSortBy}>
-                      <SelectTrigger className="w-auto h-10 text-sm bg-white border-gray-200 rounded-lg shadow-sm">
-                        <SortAsc className="w-4 h-4 mr-2" /> <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="rating">Highest Rated</SelectItem>
-                        <SelectItem value="price-low">Price: Low to High</SelectItem>
-                        <SelectItem value="price-high">Price: High to Low</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <Button variant="ghost" size="icon" onClick={handleResetServiceFilters} className="rounded-full">
-                      <RotateCw className="w-4 h-4" />
-                    </Button>
-                  </div>
-                </div>
-              </div>
-
-              {/* REBUILT: Services Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pt-4">
-                {filteredServices.map((service, index) => (
-                  <div
-                    key={index}
-                    onClick={() => setSelectedService(service)}
-                    className={`cursor-pointer rounded-2xl border-2 p-8 transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 ${
-                      selectedService?.title === service.title
-                        ? "border-green-500 bg-gradient-to-br from-green-50 to-white shadow-2xl shadow-green-500/20"
-                        : "border-green-200/50 bg-white hover:border-green-300/50 hover:bg-gray-50"
-                    }`}
-                  >
-                    {/* Service Card content remains the same */}
-                    <div className="flex items-start justify-between mb-6">
-                      <div className="flex-1">
-                        <h3 className="font-bold text-gray-800 text-xl mb-3">{service.title}</h3>
-                        <div className="flex items-center space-x-4 text-sm text-gray-500 mb-4">
-                          <div className="flex items-center space-x-1">
-                            <Clock className="w-4 h-4" />
-                            <span>{service.duration}</span>
-                          </div>
-                          <div className="flex items-center space-x-1">
-                            <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                            <span>{service.rating}</span>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <div className="font-bold text-green-600 text-2xl mb-2">{service.price}</div>
-                        <Badge variant="outline" className="border-green-400/30 text-green-400 text-xs">
-                          {service.difficulty}
-                        </Badge>
-                      </div>
-                    </div>
-
-                    <p className="text-gray-600 text-sm mb-6 leading-relaxed">{service.description}</p>
-
-                    <div className="space-y-3">
-                      {service.features.slice(0, 3).map((feature, featureIndex) => (
-                        <div key={featureIndex} className="flex items-center space-x-3">
-                          <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
-                          <span className="text-sm text-gray-700">{feature}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <div className="mt-6 flex justify-end">
-                <Button
-                  onClick={() => setCurrentStep(1)}
-                  disabled={!canProceedToNextStep()}
-                  aria-label="Continue to choose trainer"
-                  className="bg-green-600 hover:bg-green-700 text-white"
-                >
-                  <span className="inline-flex items-center gap-2">
-                    Continue
-                    <ChevronRight className="w-4 h-4" />
-                  </span>
-                </Button>
-              </div>
-            </div>
-          )}
+          {/* Step 0: Select Service - REMOVED */}
 
           {/* Step 1: Choose Trainer */}
           {currentStep === 1 && (
             <div className="space-y-8">
-              <div className="text-center">
-                <h2 className="text-3xl font-bold text-gray-800 mb-2">Choose Your Trainer</h2>
-                <p className="text-gray-600 text-lg">Select from our certified wellness experts</p>
-              </div>
-
-              {/* REBUILT: Sticky & Compact Trainer Filter Toolbar */}
               <div
                 role="region"
                 aria-label="Trainer filters"
-                className="sticky top-16 z-10 relative bg-white/90 backdrop-blur-lg rounded-2xl p-4 border border-green-200/80 shadow-lg shadow-green-500/10 space-y-4"
+                className="sticky top-16 z-10 bg-gradient-to-r from-white/95 via-white/90 to-white/95 backdrop-blur-xl py-4 px-2"
               >
-                {/* Accent bar */}
-                <div
-                  aria-hidden="true"
-                  className="absolute inset-x-0 top-0 h-1 rounded-t-2xl bg-gradient-to-r from-green-500 via-emerald-400 to-teal-400"
-                />
-
-                {/* Controls */}
-                <div
-                  role="toolbar"
-                  aria-label="Trainer filter controls"
-                  className="grid grid-cols-1 md:grid-cols-4 gap-3"
-                >
-                  <div className="relative flex-1 md:col-span-1">
-                    <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
-                    <Input
-                      placeholder="Search trainers by name, specialty..."
-                      value={trainerSearchQuery}
-                      onChange={(e) => setTrainerSearchQuery(e.target.value)}
-                      className="pl-11 w-full h-12 bg-white border-gray-200 rounded-lg shadow-sm hover:border-green-300 focus:ring-1 focus:ring-green-500 focus:border-green-500 transition-colors"
-                      aria-label="Search trainers"
+                <div className="flex flex-wrap items-center justify-center gap-3 max-w-4xl mx-auto">
+                  {/* Search Input */}
+                  <div className="relative flex-1 min-w-[280px] max-w-md">
+                    <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                    <input
+                      type="text"
+                      placeholder="Search trainers..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="w-full pl-12 pr-4 py-3 bg-white/80 border border-gray-200/60 rounded-full text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-400/50 transition-all duration-200 shadow-sm hover:shadow-md"
                     />
-                    {trainerSearchQuery && (
+                  </div>
+
+                  {/* Filter Pills */}
+                  <div className="flex items-center gap-2">
+                    {/* Specialization Filter */}
+                    <select
+                      value={selectedSpecialization}
+                      onChange={(e) => setSelectedSpecialization(e.target.value)}
+                      className="px-4 py-2.5 bg-white/80 border border-gray-200/60 rounded-full text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-400/50 transition-all duration-200 shadow-sm hover:shadow-md cursor-pointer"
+                    >
+                      <option value="">All Specializations</option>
+                      <option value="Yoga">Yoga</option>
+                      <option value="Fitness">Fitness</option>
+                      <option value="Nutrition">Nutrition</option>
+                      <option value="Mental Health">Mental Health</option>
+                    </select>
+
+                    {/* Experience Filter */}
+                    <select
+                      value={selectedExperience}
+                      onChange={(e) => setSelectedExperience(e.target.value)}
+                      className="px-4 py-2.5 bg-white/80 border border-gray-200/60 rounded-full text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-400/50 transition-all duration-200 shadow-sm hover:shadow-md cursor-pointer"
+                    >
+                      <option value="">Any Experience</option>
+                      <option value="1-3 years">1-3 years</option>
+                      <option value="3-5 years">3-5 years</option>
+                      <option value="5+ years">5+ years</option>
+                    </select>
+
+                    {/* Rating Filter */}
+                    <select
+                      value={selectedRating}
+                      onChange={(e) => setSelectedRating(e.target.value)}
+                      className="px-4 py-2.5 bg-white/80 border border-gray-200/60 rounded-full text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-400/50 transition-all duration-200 shadow-sm hover:shadow-md cursor-pointer"
+                    >
+                      <option value="">Any Rating</option>
+                      <option value="4.5+">4.5+ Stars</option>
+                      <option value="4.0+">4.0+ Stars</option>
+                      <option value="3.5+">3.5+ Stars</option>
+                    </select>
+
+                    {/* Clear Filters Button */}
+                    {(searchQuery || selectedSpecialization || selectedExperience || selectedRating) && (
                       <button
-                        onClick={() => setTrainerSearchQuery("")}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                        aria-label="Clear trainer search"
+                        onClick={() => {
+                          setSearchQuery("")
+                          setSelectedSpecialization("")
+                          setSelectedExperience("")
+                          setSelectedRating("")
+                        }}
+                        className="px-4 py-2.5 bg-gray-100/80 hover:bg-gray-200/80 border border-gray-200/60 rounded-full text-sm font-medium text-gray-600 hover:text-gray-800 transition-all duration-200 shadow-sm hover:shadow-md flex items-center gap-2"
                       >
-                        <X className="w-5 h-5" />
+                        <X className="w-4 h-4" />
+                        Clear
                       </button>
                     )}
                   </div>
-
-                  <Select
-                    value={trainerFilters.specialization}
-                    onValueChange={(value) => setTrainerFilters({ ...trainerFilters, specialization: value })}
-                  >
-                    <SelectTrigger
-                      className="h-12 bg-white border-gray-200 rounded-lg shadow-sm text-gray-600 md:w-full"
-                      aria-label="Filter by specialization"
-                    >
-                      <SelectValue placeholder="Specialty" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Specializations</SelectItem>
-                      <SelectItem value="yoga">Yoga</SelectItem>
-                      <SelectItem value="meditation">Meditation</SelectItem>
-                      <SelectItem value="power">Power Yoga</SelectItem>
-                      <SelectItem value="prenatal">Prenatal</SelectItem>
-                    </SelectContent>
-                  </Select>
-
-                  <Select
-                    value={trainerFilters.experience}
-                    onValueChange={(value) => setTrainerFilters({ ...trainerFilters, experience: value })}
-                  >
-                    <SelectTrigger
-                      className="h-12 bg-white border-gray-200 rounded-lg shadow-sm text-gray-600 md:w-full"
-                      aria-label="Filter by experience"
-                    >
-                      <SelectValue placeholder="Experience" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Experience</SelectItem>
-                      <SelectItem value="5-">Under 5 years</SelectItem>
-                      <SelectItem value="5-10">5-10 years</SelectItem>
-                      <SelectItem value="10+">10+ years</SelectItem>
-                    </SelectContent>
-                  </Select>
-
-                  <Select
-                    value={trainerFilters.location}
-                    onValueChange={(value) => setTrainerFilters({ ...trainerFilters, location: value })}
-                  >
-                    <SelectTrigger
-                      className="h-12 bg-white border-gray-200 rounded-lg shadow-sm text-gray-600 md:w-full"
-                      aria-label="Filter by location"
-                    >
-                      <SelectValue placeholder="Location" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Locations</SelectItem>
-                      <SelectItem value="mumbai">Mumbai</SelectItem>
-                      <SelectItem value="delhi">Delhi</SelectItem>
-                      <SelectItem value="bangalore">Bangalore</SelectItem>
-                      <SelectItem value="jaipur">Jaipur</SelectItem>
-                    </SelectContent>
-                  </Select>
                 </div>
 
-                {/* Footer: results + sort + reset + active chips */}
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 pt-3 border-t border-green-100/80">
-                  <div className="flex flex-col gap-2">
-                    <div className="text-sm text-gray-600">
-                      Showing <span className="font-bold text-green-600">{filteredTrainers.length}</span> of{" "}
-                      {trainers.length} trainers
-                    </div>
-
-                    {/* Active filter chips */}
-                    <div className="flex flex-wrap gap-2">
-                      {trainerSearchQuery && (
-                        <Badge variant="outline" className="border-green-300/50 bg-green-50/40 text-gray-700">
-                          Search: {trainerSearchQuery}
-                          <button
-                            onClick={() => setTrainerSearchQuery("")}
-                            className="ml-2 inline-flex items-center text-gray-500 hover:text-gray-700"
-                            aria-label="Clear search"
-                          >
-                            <X className="w-3.5 h-3.5" />
-                          </button>
-                        </Badge>
-                      )}
-                      {trainerFilters.specialization !== "all" && (
-                        <Badge variant="outline" className="border-green-300/50 bg-green-50/40 text-gray-700">
-                          Specialty: {trainerFilters.specialization}
-                          <button
-                            onClick={() => setTrainerFilters({ ...trainerFilters, specialization: "all" })}
-                            className="ml-2 inline-flex items-center text-gray-500 hover:text-gray-700"
-                            aria-label="Clear specialty filter"
-                          >
-                            <X className="w-3.5 h-3.5" />
-                          </button>
-                        </Badge>
-                      )}
-                      {trainerFilters.experience !== "all" && (
-                        <Badge variant="outline" className="border-green-300/50 bg-green-50/40 text-gray-700">
-                          Experience: {trainerFilters.experience}
-                          <button
-                            onClick={() => setTrainerFilters({ ...trainerFilters, experience: "all" })}
-                            className="ml-2 inline-flex items-center text-gray-500 hover:text-gray-700"
-                            aria-label="Clear experience filter"
-                          >
-                            <X className="w-3.5 h-3.5" />
-                          </button>
-                        </Badge>
-                      )}
-                      {trainerFilters.location !== "all" && (
-                        <Badge variant="outline" className="border-green-300/50 bg-green-50/40 text-gray-700">
-                          Location: {trainerFilters.location}
-                          <button
-                            onClick={() => setTrainerFilters({ ...trainerFilters, location: "all" })}
-                            className="ml-2 inline-flex items-center text-gray-500 hover:text-gray-700"
-                            aria-label="Clear location filter"
-                          >
-                            <X className="w-3.5 h-3.5" />
-                          </button>
-                        </Badge>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-3 self-stretch sm:self-auto">
-                    <Select value={trainerSortBy} onValueChange={setTrainerSortBy}>
-                      <SelectTrigger className="w-auto h-10 text-sm bg-white border-gray-200 rounded-lg shadow-sm">
-                        <SortAsc className="w-4 h-4 mr-2" /> <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="rating">Highest Rated</SelectItem>
-                        <SelectItem value="experience">Most Experienced</SelectItem>
-                        <SelectItem value="sessions">Most Sessions</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={handleResetTrainerFilters}
-                      className="rounded-full"
-                      aria-label="Reset filters"
-                      title="Reset filters"
-                    >
-                      <RotateCw className="w-4 h-4" />
-                    </Button>
-                  </div>
+                {/* Results Count */}
+                <div className="text-center mt-3">
+                  <span className="text-sm text-gray-500 font-medium">
+                    {filteredTrainers.length} trainer{filteredTrainers.length !== 1 ? "s" : ""} available
+                  </span>
                 </div>
               </div>
 
@@ -1294,7 +978,12 @@ export default function BookingPage() {
                         setSelectedTrainer(trainer)
                       }
                     }}
-                    onClick={() => setSelectedTrainer(trainer)}
+                    onClick={() => {
+                      console.log("[v0] Trainer clicked:", trainer.name, trainer.id)
+                      console.log("[v0] Current selectedTrainer:", selectedTrainer?.id)
+                      setSelectedTrainer(trainer)
+                      console.log("[v0] Setting selectedTrainer to:", trainer.id)
+                    }}
                     className={`group relative cursor-pointer rounded-2xl p-[1px] transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500 ${
                       selectedTrainer?.id === trainer.id
                         ? "bg-gradient-to-br from-green-400/40 via-green-300/30 to-transparent shadow-2xl shadow-green-500/20"
@@ -1303,17 +992,16 @@ export default function BookingPage() {
                   >
                     {/* Inner card surface */}
                     <div
-                      className={`rounded-2xl bg-white p-6 border transition-all duration-300 group-hover:shadow-2xl group-hover:-translate-y-1 ${
+                      className={`rounded-2xl p-6 border transition-all duration-300 group-hover:shadow-2xl group-hover:-translate-y-1 ${
                         selectedTrainer?.id === trainer.id
-                          ? "border-green-300/60"
-                          : "border-green-200/50 group-hover:border-green-300/50"
+                          ? "border-green-400/80 bg-gradient-to-br from-green-50/80 to-green-100/40 shadow-lg shadow-green-500/10"
+                          : "border-green-200/50 group-hover:border-green-300/50 bg-white"
                       }`}
                     >
                       {/* Selected pill */}
                       {selectedTrainer?.id === trainer.id && (
-                        <div className="absolute right-3 top-3 z-10 flex items-center gap-1 rounded-full bg-green-600 px-2 py-1 text-xs font-semibold text-white shadow">
-                          <Check className="w-3.5 h-3.5" />
-                          <span>Selected</span>
+                        <div className="absolute left-3 top-3 z-10 flex items-center justify-center w-8 h-8 rounded-full bg-green-600 text-white shadow-lg">
+                          <Check className="w-4 h-4" />
                         </div>
                       )}
 
@@ -1328,7 +1016,7 @@ export default function BookingPage() {
                           <img
                             src={trainer.image || "/placeholder.svg"}
                             alt={trainer.name}
-                            className="relative w-24 h-24 rounded-xl object-cover ring-2 ring-green-300/30"
+                            className="relative w-24 h-24 rounded-xl object-cover object-center ring-2 ring-green-300/30"
                           />
                         </div>
 
@@ -1408,13 +1096,7 @@ export default function BookingPage() {
                 ))}
               </div>
 
-              <div className="mt-6 flex items-center justify-between">
-                <Button variant="outline" onClick={() => setCurrentStep(0)} aria-label="Go back to select service">
-                  <span className="inline-flex items-center gap-2">
-                    <ChevronLeft className="w-4 h-4" />
-                    Back
-                  </span>
-                </Button>
+              <div className="sticky bottom-0 left-0 right-0 z-10 mt-6 p-4 bg-white/95 backdrop-blur-sm border-t border-green-200 shadow-lg flex items-center justify-end">
                 <Button
                   onClick={() => setCurrentStep(2)}
                   disabled={!canProceedToNextStep()}
@@ -1601,6 +1283,9 @@ export default function BookingPage() {
                     </div>
 
                     <div className="flex items-center gap-2">
+                      <div className="px-3 py-1.5 rounded-full bg-green-100 text-green-800 text-sm font-semibold border border-green-300">
+                        {calendarMonth.toLocaleDateString("en-US", { month: "long" })}
+                      </div>
                       <Button
                         variant="ghost"
                         size="sm"
@@ -1646,36 +1331,46 @@ export default function BookingPage() {
                         {day}
                       </div>
                     ))}
-                    {generateCalendarDates().map((date) => (
-                      <div
-                        key={date.toISOString()}
-                        className={`text-center p-2 rounded ${
-                          isSameDay(date, new Date()) ? "bg-green-50 text-green-700 font-semibold" : ""
-                        } ${
-                          isSameDay(date, parseFormattedDate(selectedDate) ?? new Date())
-                            ? "bg-green-100 text-green-600 font-semibold"
-                            : ""
-                        } ${
-                          date.getMonth() !== calendarMonth.getMonth()
-                            ? "text-gray-300 cursor-not-allowed"
-                            : "cursor-pointer hover:bg-green-50"
-                        }`}
-                        onClick={() => {
-                          if (date.getMonth() === calendarMonth.getMonth()) {
-                            setSelectedDate(formatDate(date))
-                          }
-                        }}
-                      >
-                        {date.getDate()}
-                      </div>
-                    ))}
+                    {generateCalendarDates().map((date) => {
+                      const today = new Date()
+                      today.setHours(0, 0, 0, 0)
+                      const isPastDate = date < today
+                      const isCurrentMonth = date.getMonth() === calendarMonth.getMonth()
+                      const isToday = isSameDay(date, today)
+                      const isSelected = isSameDay(date, parseFormattedDate(selectedDate) ?? new Date())
+
+                      return (
+                        <div
+                          key={date.toISOString()}
+                          className={`text-center p-2 rounded transition-all duration-200 ${
+                            isToday ? "bg-green-50 text-green-700 font-semibold ring-2 ring-green-300" : ""
+                          } ${isSelected ? "bg-green-100 text-green-600 font-semibold ring-2 ring-green-400" : ""} ${
+                            !isCurrentMonth
+                              ? "text-gray-300 cursor-not-allowed"
+                              : isPastDate
+                                ? "text-gray-400 cursor-not-allowed opacity-50"
+                                : "cursor-pointer hover:bg-green-50 hover:text-green-700"
+                          }`}
+                          onClick={() => {
+                            if (isCurrentMonth && !isPastDate) {
+                              handleDateSelection(date)
+                            }
+                          }}
+                        >
+                          {date.getDate()}
+                        </div>
+                      )
+                    })}
                   </div>
                 </section>
               </div>
 
               {/* Time Slots */}
               {selectedDate && (
-                <div className="mt-6 bg-white/90 backdrop-blur-sm rounded-xl p-6 border border-green-200/80 shadow-xl animate-in slide-in-from-bottom duration-300">
+                <div
+                  ref={timeSlotsRef}
+                  className="mt-6 bg-white/90 backdrop-blur-sm rounded-xl p-6 border border-green-200/80 shadow-xl animate-in slide-in-from-bottom duration-300"
+                >
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-xl font-semibold text-gray-800">Available Time Slots</h3>
                     <span className="text-sm text-gray-500">
@@ -1749,28 +1444,108 @@ export default function BookingPage() {
               </div>
 
               {/* Booking Summary */}
-              <div className="bg-white rounded-2xl p-6 shadow-md">
-                <h3 className="text-xl font-bold text-gray-800 mb-4">Booking Summary</h3>
-                <div className="space-y-3">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Service:</span>
-                    <span className="font-semibold">{selectedService?.title}</span>
+              <div className="relative overflow-hidden bg-gradient-to-br from-white via-green-50/30 to-emerald-50/40 rounded-3xl p-8 shadow-2xl border border-green-200/50 backdrop-blur-sm">
+                {/* Decorative elements */}
+                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-green-400/10 to-emerald-500/5 rounded-full blur-3xl" />
+                <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-green-300/10 to-teal-400/5 rounded-full blur-2xl" />
+
+                <div className="relative">
+                  {/* Header with icon */}
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg shadow-green-500/25">
+                      <CheckCircle className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-2xl font-bold text-gray-800 tracking-tight">Booking Summary</h3>
+                      <p className="text-sm text-gray-600 font-medium">Review your session details</p>
+                    </div>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Trainer:</span>
-                    <span className="font-semibold">{selectedTrainer?.name}</span>
+
+                  {/* Summary items with enhanced styling */}
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between p-4 bg-white/70 backdrop-blur-sm rounded-2xl border border-green-100/60 shadow-sm hover:shadow-md transition-all duration-200">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 bg-green-100 rounded-xl flex items-center justify-center">
+                          <Briefcase className="w-4 h-4 text-green-600" />
+                        </div>
+                        <span className="text-gray-600 font-medium">Service</span>
+                      </div>
+                      <span className="font-bold text-gray-800 text-right">{selectedService?.title}</span>
+                    </div>
+
+                    <div className="flex items-center justify-between p-4 bg-white/70 backdrop-blur-sm rounded-2xl border border-green-100/60 shadow-sm hover:shadow-md transition-all duration-200">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 bg-green-100 rounded-xl flex items-center justify-center">
+                          <User className="w-4 h-4 text-green-600" />
+                        </div>
+                        <span className="text-gray-600 font-medium">Trainer</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {selectedTrainer?.image && (
+                          <img
+                            src={selectedTrainer.image || "/placeholder.svg"}
+                            alt={selectedTrainer.name}
+                            className="w-6 h-6 rounded-full object-cover ring-2 ring-green-200"
+                          />
+                        )}
+                        <span className="font-bold text-gray-800">{selectedTrainer?.name}</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between p-4 bg-white/70 backdrop-blur-sm rounded-2xl border border-green-100/60 shadow-sm hover:shadow-md transition-all duration-200">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 bg-green-100 rounded-xl flex items-center justify-center">
+                          <MapPin className="w-4 h-4 text-green-600" />
+                        </div>
+                        <span className="text-gray-600 font-medium">Date</span>
+                      </div>
+                      <span className="font-bold text-gray-800">{selectedDate}</span>
+                    </div>
+
+                    <div className="flex items-center justify-between p-4 bg-white/70 backdrop-blur-sm rounded-2xl border border-green-100/60 shadow-sm hover:shadow-md transition-all duration-200">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 bg-green-100 rounded-xl flex items-center justify-center">
+                          <Shield className="w-4 h-4 text-green-600" />
+                        </div>
+                        <span className="text-gray-600 font-medium">Time</span>
+                      </div>
+                      <span className="font-bold text-gray-800">{selectedTime}</span>
+                    </div>
+
+                    {/* Total amount with special styling */}
+                    <div className="mt-6 p-6 bg-gradient-to-r from-green-600 to-emerald-600 rounded-2xl shadow-xl shadow-green-600/25">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+                            <CreditCard className="w-5 h-5 text-white" />
+                          </div>
+                          <div>
+                            <span className="text-white/90 font-medium text-lg">Total Amount</span>
+                            <p className="text-white/70 text-sm">Including all charges</p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <span className="font-bold text-white text-3xl tracking-tight">₹{calculateTotalPrice()}</span>
+                          <p className="text-white/80 text-sm font-medium">Per session</p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Date:</span>
-                    <span className="font-semibold">{selectedDate}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Time:</span>
-                    <span className="font-semibold">{selectedTime}</span>
-                  </div>
-                  <div className="flex justify-between border-t pt-3">
-                    <span className="text-gray-600">Total Amount:</span>
-                    <span className="font-bold text-green-600 text-lg">₹{calculateTotalPrice()}</span>
+
+                  {/* Trust indicators */}
+                  <div className="mt-6 flex items-center justify-center gap-6 pt-6 border-t border-green-200/50">
+                    <div className="flex items-center gap-2 text-sm text-gray-600">
+                      <Shield className="w-4 h-4 text-green-600" />
+                      <span className="font-medium">Secure Payment</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm text-gray-600">
+                      <CheckCircle className="w-4 h-4 text-green-600" />
+                      <span className="font-medium">Verified Trainers</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm text-gray-600">
+                      <Star className="w-4 h-4 text-green-600" />
+                      <span className="font-medium">Quality Assured</span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1888,7 +1663,7 @@ export default function BookingPage() {
                             ) : (
                               <p className="text-xs text-green-700 font-medium">
                                 {addressSuggestions.length} location{addressSuggestions.length !== 1 ? "s" : ""} found
-                                <span className="text-green-600 ml-1">• Powered by OpenStreetMap</span>
+                                <span className="text-green-600 ml-1">• Powered by Google Places</span>
                               </p>
                             )}
                           </div>
@@ -1907,7 +1682,8 @@ export default function BookingPage() {
                             </div>
                           ) : addressSuggestions.length > 0 ? (
                             addressSuggestions.map((suggestion, index) => {
-                              const parts = suggestion.split(", ")
+                              const description = typeof suggestion === "string" ? suggestion : suggestion.description
+                              const parts = description.split(", ")
                               const mainLocation = parts[0]
                               const area = parts.length > 2 ? parts[1] : ""
                               const cityState = parts.slice(-2).join(", ")
@@ -1924,6 +1700,11 @@ export default function BookingPage() {
                                     <div className="font-medium text-gray-900 text-sm truncate">{mainLocation}</div>
                                     {area && <div className="text-xs text-gray-600 truncate">{area}</div>}
                                     <div className="text-xs text-gray-500 truncate">{cityState}</div>
+                                    {typeof suggestion === "object" && suggestion.place_id && (
+                                      <div className="text-xs text-green-600 font-medium mt-1">
+                                        📍 Postal code will be auto-filled
+                                      </div>
+                                    )}
                                   </div>
                                 </button>
                               )
@@ -2001,17 +1782,17 @@ export default function BookingPage() {
                       </Select>
                     </div>
                   </div>
-                </div>
 
-                <div className="mt-6 p-4 bg-green-50 rounded-lg border border-green-200">
-                  <div className="flex items-start gap-3">
-                    <Shield className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
-                    <div>
-                      <p className="text-sm font-medium text-green-800">Your information is secure</p>
-                      <p className="text-xs text-green-600 mt-1">
-                        We use industry-standard encryption to protect your personal data and never share it with third
-                        parties.
-                      </p>
+                  <div className="mt-6 p-4 bg-green-50 rounded-lg border border-green-200">
+                    <div className="flex items-start gap-3">
+                      <Shield className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
+                      <div>
+                        <p className="text-sm font-medium text-green-800">Your information is secure</p>
+                        <p className="text-xs text-green-600 mt-1">
+                          We use industry-standard encryption to protect your personal data and never share it with
+                          third parties.
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>

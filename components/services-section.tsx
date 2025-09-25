@@ -128,9 +128,9 @@ export function ServicesSection() {
       id="services"
       className="py-8 sm:py-12 lg:py-16 xl:py-20 px-3 sm:px-4 lg:px-6 pt-20 sm:pt-24 lg:pt-28 bg-gradient-to-br from-green-100 via-white to-green-200"
     >
-      <div className="container mx-auto max-w-7xl">
+      <div className="container mx-auto max-w-none">
         <div className="text-center mb-6 sm:mb-8 lg:mb-12">
-          <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-black mb-3 sm:mb-4 leading-tight tracking-tight px-4">
+          <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-black mt-6 sm:mb-4 leading-tight tracking-tight px-4 ">
             Explore Our{" "}
             <span className="bg-gradient-to-r from-green-800 to-green-800 bg-clip-text text-transparent">Program</span>
           </h2>

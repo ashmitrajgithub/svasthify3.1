@@ -150,7 +150,7 @@ export function TrainersSection() {
       className="py-12 sm:py-16 lg:py-20 px-3 sm:px-4 lg:px-6 bg-gradient-to-br from-green-100 to-white"
       id="trainers-section"
     >
-      <div className="container mx-auto max-w-7xl">
+      <div className="container mx-auto max-w-none">
         <div className="text-center mb-8 sm:mb-12 lg:mb-16 relative">
           <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-black mb-3 sm:mb-4 leading-tight tracking-tight px-4">
             Meet Our{" "}
@@ -208,7 +208,7 @@ export function TrainersSection() {
                           src={trainer.image || "/placeholder.svg"}
                           alt={trainer.name}
                           loading="lazy"
-                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 will-change-transform"
+                          className="w-full h-full object-cover group-hover/inner:scale-110 transition-transform duration-700 will-change-transform"
                         />
 
                         {trainer.verified && (
@@ -323,9 +323,6 @@ export function TrainersSection() {
               to {
                 transform: translate3d(-50%, 0, 0);
               }
-            }
-            .group:hover .marquee-track {
-              animation-play-state: paused;
             }
             @media (prefers-reduced-motion: reduce) {
               .marquee-track {
