@@ -8,9 +8,8 @@ import { Button } from "@/components/ui/button"
 // An array to manage navigation links easily
 const navItems = [
   { name: "Home", href: "/" },
-  { name: "Services", href: "#services" },
-  { name: "Trainers", href: "#trainers" },
- 
+  { name: "Services", href: "/services" }, // Updated href from "#services" to "/services" to redirect to services page
+  { name: "Trainers", href: "/trainers" },
 ]
 
 export function Header() {
