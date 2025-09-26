@@ -114,7 +114,7 @@ export function AboutSection() {
 
   return (
     <section id="about" className="py-12 sm:py-16 lg:py-20 bg-gradient-to-br from-white via-emerald-50/30 to-white">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
         <div
           ref={ref}
           className="bg-gradient-to-r from-emerald-500 to-teal-600 rounded-2xl sm:rounded-3xl p-6 sm:p-8 lg:p-12 mb-12 sm:mb-16 lg:mb-20 text-white shadow-2xl transform transition-all duration-1000 hover:shadow-3xl hover:scale-[1.02]"

@@ -112,7 +112,7 @@ export function FAQSection() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-emerald-50/30 to-teal-50/30 rounded-full blur-3xl"></div>
       </div>
 
-      <div className="max-w-4xl mx-auto relative z-10">
+      <div className="max-w-6xl mx-auto relative z-10">
         {/* Header */}
         <div className="text-center mb-8 sm:mb-10 lg:mb-12">
           <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-100/50 text-emerald-700 text-xs sm:text-sm font-semibold mb-3 sm:mb-4 shadow-sm backdrop-blur-sm">
@@ -122,7 +122,7 @@ export function FAQSection() {
 
           <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-3 sm:mb-4 leading-tight tracking-tight px-4">
             Everything You
-            <span className="bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-green-600 to-green-700 bg-clip-text text-transparent">
               &nbsp; Need to Know
             </span>
           </h2>

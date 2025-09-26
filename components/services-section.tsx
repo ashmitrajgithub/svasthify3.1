@@ -132,7 +132,7 @@ export function ServicesSection() {
         <div className="text-center mb-6 sm:mb-8 lg:mb-12">
           <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-black mt-6 sm:mb-4 leading-tight tracking-tight px-4 ">
             Explore Our{" "}
-            <span className="bg-gradient-to-r from-green-800 to-green-800 bg-clip-text text-transparent">Program</span>
+            <span className="bg-gradient-to-r from-green-600 to-green-700 bg-clip-text text-transparent">Program</span>
           </h2>
         </div>
 
@@ -174,14 +174,14 @@ export function ServicesSection() {
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-green-900/20" />
 
-                        <div className="absolute top-2 sm:top-3 right-2 sm:right-3 bg-black/80 rounded-lg px-2 py-1 shadow-sm border border-green-400/30">
+                        {/* <div className="absolute top-2 sm:top-3 right-2 sm:right-3 bg-black/80 rounded-lg px-2 py-1 shadow-sm border border-green-400/30">
                           <div className="flex items-center space-x-1">
                             <Star className="w-3 h-3 text-green-400 fill-current" />
                             <span className="text-xs font-semibold text-white">{service.rating}</span>
                           </div>
-                        </div>
+                        </div> */}
 
-                        <div className="absolute top-2 sm:top-3 left-2 sm:left-3 bg-gradient-to-r from-green-500 to-green-400 text-black rounded-lg px-2 sm:px-3 py-1 text-xs sm:text-sm font-semibold">
+                        <div className="absolute top-2 sm:top-3 left-2 sm:left-3 bg-gradient-to-r from-green-100 to-green-200 text-black rounded-lg px-2 sm:px-3 py-1 text-xs sm:text-sm font-semibold">
                           {service.price}
                         </div>
                       </div>
@@ -224,7 +224,7 @@ export function ServicesSection() {
 
                         <Button
                           onClick={() => handleBookService(service)}
-                          className="w-full bg-gradient-to-r from-green-500 to-green-400 hover:from-green-600 hover:to-green-500 text-black font-semibold py-2.5 sm:py-3 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 text-xs sm:text-sm group"
+                          className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-semibold py-2.5 sm:py-3 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 text-xs sm:text-sm group"
                         >
                           Book Session
                           <ArrowRight className="ml-2 w-3 h-3 sm:w-4 sm:h-4 group-hover:translate-x-1 transition-transform duration-200" />

@@ -120,11 +120,11 @@ export function TestimonialsSection() {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(52,211,153,0.1),transparent_50%)] animate-pulse-slow"></div>
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(134,239,172,0.1),transparent_50%)] animate-pulse-slow"></div>
 
-      <div className="container mx-auto max-w-7xl relative z-10 group">
+      <div className="container mx-auto max-w-full relative z-10 group">
         <div className="text-center mb-6 sm:mb-8 lg:mb-12">
           <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-black mb-3 sm:mb-4 leading-tight tracking-tight px-4">
             What Our{" "}
-            <span className="bg-gradient-to-r from-green-800 to-green-800 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-green-600 to-green-700 bg-clip-text text-transparent">
               Clients Say
             </span>
           </h2>

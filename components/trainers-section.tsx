@@ -154,7 +154,7 @@ export function TrainersSection() {
         <div className="text-center mb-8 sm:mb-12 lg:mb-16 relative">
           <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-black mb-3 sm:mb-4 leading-tight tracking-tight px-4">
             Meet Our{" "}
-            <span className="bg-gradient-to-r from-green-800 to-green-800 bg-clip-text text-transparent">Trainers</span>
+            <span className="bg-gradient-to-r from-green-600 to-green-700 bg-clip-text text-transparent">Trainers</span>
           </h2>
 
           <div
@@ -166,7 +166,7 @@ export function TrainersSection() {
               asChild
               className="rounded-full px-3 sm:px-4 py-2 bg-green-200 text-black hover:bg-green-300 transition-colors text-sm sm:text-base"
             >
-              <Link href="/trainers" target="_blank" rel="noopener noreferrer" aria-label="See all trainers">
+              <Link href="/trainers" rel="noopener noreferrer" aria-label="See all trainers">
                 See all trainers
                 <ArrowRight className="ml-2 w-3 h-3 sm:w-4 sm:h-4" />
               </Link>
@@ -212,24 +212,53 @@ export function TrainersSection() {
                         />
 
                         {trainer.verified && (
-                          <div className="absolute top-2 sm:top-4 right-2 sm:right-4 z-20">
-                            <div className="bg-white/90 backdrop-blur-sm rounded-full p-1.5 sm:p-2 shadow-premium">
-                              <Shield className="w-3 h-3 sm:w-4 sm:h-4 text-sage-600" />
+                          <div className="absolute top-0 right-0 w-12 h-12 sm:w-16 sm:h-16 overflow-hidden z-20">
+                            <div className="absolute top-0 right-0 w-12 h-12 sm:w-16 sm:h-16">
+                              {/* Main curved ribbon with enhanced gradient */}
+                              <div
+                                className="absolute top-0 right-0 bg-gradient-to-bl from-emerald-400 via-green-500 to-green-600"
+                                style={{
+                                  width: "100%",
+                                  height: "100%",
+                                  borderRadius: "0 0 0 100%",
+                                  boxShadow:
+                                    "0 4px 16px rgba(34, 197, 94, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3)",
+                                }}
+                              />
+                              {/* Inner highlight for depth */}
+                              <div
+                                className="absolute top-0 right-0 bg-gradient-to-bl from-white/25 to-transparent"
+                                style={{
+                                  width: "calc(100% - 4px)",
+                                  height: "calc(100% - 4px)",
+                                  borderRadius: "0 0 0 100%",
+                                  top: "2px",
+                                  right: "2px",
+                                }}
+                              />
+                              <div className="absolute top-1 right-1 sm:top-2 sm:right-2 transform -rotate-60 text-white text-center">
+                                <div className="flex flex-col items-center justify-center space-y-0.5">
+                                  <Shield className="w-2.5 h-2.5 sm:w-4 sm:h-4 drop-shadow-md" />
+                                  <div className="text-[6px] sm:text-[8px] font-extrabold leading-tight tracking-wider drop-shadow-md whitespace-nowrap">
+                                    VERIFIED
+                                  </div>
+                                </div>
+                              </div>
                             </div>
                           </div>
                         )}
 
-                        <div className="absolute top-2 sm:top-4 left-2 sm:left-4 z-20">
-                          <div className="bg-white/90 backdrop-blur-sm rounded-full px-2 sm:px-3 py-1 sm:py-1.5 shadow-premium">
+                        <div className="absolute top-2 sm:top-4 left-2 sm:left-4 z-20 ">
+                          <div className="bg-gradient-to-r from-green-100 to-green-200 text-black backdrop-blur-sm rounded-lg px-2 sm:px-3 py-1 text-xs sm:text-sm font-semibold">
                             <div className="flex items-center space-x-1 sm:space-x-1.5">
-                              <Star className="w-3 h-3 sm:w-4 sm:h-4 text-amber-500 fill-current" />
-                              <span className="text-xs sm:text-sm font-semibold text-slate-900">{trainer.rating}</span>
+                              <Star className="w-3 h-3 sm:w-4 sm:h-4  text-yellow-400 fill-current" />
+                              <span className="text-xs sm:text-sm font-semibold text-black">{trainer.rating}</span>
                             </div>
                           </div>
                         </div>
 
                         <div className="absolute bottom-2 sm:bottom-4 left-2 sm:left-4 z-20">
-                          <div className="bg-white/90 backdrop-blur-sm rounded-full px-2 sm:px-3 py-1 sm:py-1.5 shadow-premium">
+                          <div className="bg-gradient-to-r from-green-100 to-green-200 text-black backdrop-blur-sm rounded-lg px-2 sm:px-3 py-1 text-xs sm:text-sm font-semibold">
                             <div className="flex items-center space-x-1 sm:space-x-1.5">
                               <Clock className="w-3 h-3 sm:w-4 sm:h-4 text-sage-600" />
                               <span className="text-xs sm:text-sm font-semibold text-slate-900">
@@ -239,10 +268,8 @@ export function TrainersSection() {
                           </div>
                         </div>
 
-                        <div className="absolute bottom-2 sm:bottom-4 right-2 sm:right-4 z-20">
-                          <div className="bg-sage-500 text-white rounded-full px-3 sm:px-4 py-1.5 sm:py-2 shadow-sage">
-                            <span className="text-sm sm:text-base font-bold">{trainer.price}</span>
-                          </div>
+                        <div className="absolute bottom-2 sm:bottom-3 right-2 sm:right-3 bg-gradient-to-r from-green-100 to-green-200 text-black rounded-lg px-2 sm:px-3 py-1 text-xs sm:text-sm font-semibold">
+                          {trainer.price}
                         </div>
                       </div>
 
@@ -269,7 +296,7 @@ export function TrainersSection() {
                             {trainer.highlights.slice(0, 3).map((highlight) => (
                               <Badge
                                 key={highlight}
-                                className="badge-sage text-xs px-2 sm:px-3 py-1 sm:py-1.5 rounded-full font-medium border-0 bg-gradient-to-r from-green-500 to-green-400 hover:from-green-600 hover:to-green-500"
+                                className="badge-sage text-xs px-2 sm:px-3 py-1 sm:py-1.5 rounded-full font-medium border-0 bg-gradient-to-br from-emerald-500 to-teal-600 hover:from-emerald-800 hover:to-emerald-900"
                               >
                                 {highlight}
                               </Badge>
@@ -279,7 +306,7 @@ export function TrainersSection() {
 
                         <div className="mt-auto space-y-3 sm:space-y-4">
                           <Button
-                            className="w-full btn-premium text-black bg-gradient-to-r from-green-600 to-green-700 hover:from-green-600 hover:to-green-500 font-semibold py-2.5 sm:py-3 rounded-xl sm:rounded-2xl transition-all duration-300 hover:scale-105 shadow-sage text-sm sm:text-base"
+                            className="w-full btn-premium bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-semibold py-2.5 sm:py-3 rounded-xl sm:rounded-2xl transition-all duration-300 hover:scale-105 shadow-sage text-sm sm:text-base"
                             onClick={() => handleBookTrainer(trainer.id)}
                           >
                             <Calendar className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />

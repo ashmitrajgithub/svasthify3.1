@@ -169,8 +169,8 @@ export default function ServicesPage() {
         <section className="py-8 px-4 sm:px-6 bg-gradient-to-br from-primary/5 via-white to-cyan-50/50">
           <div className="container mx-auto text-center">
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-black mb-4 leading-tight tracking-tight">
-  Explore all <span className="bg-gradient-to-r from-green-800 to-green-800 bg-clip-text text-transparent">
-     Trainers
+  Explore all <span className="bg-gradient-to-r from-green-600 to-green-700 bg-clip-text text-transparent">
+     Programs
   </span>
 </h2>
 
@@ -203,7 +203,7 @@ export default function ServicesPage() {
                   variant={selectedCategory === category ? "default" : "outline"}
                   className={`rounded-full px-8 py-3 font-semibold transition-all duration-300 ${
                     selectedCategory === category
-                      ? "bg-gradient-to-r from-green-500 to-green-400 hover:from-green-600 hover:to-green-500 text-black font-semibold shadow-lg"
+                      ? "bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-semibold shadow-lg"
                       : "border-2 border-primary/20 text-primary hover:bg-primary/5 bg-white/80 backdrop-blur-sm"
                   }`}
                 >
@@ -262,14 +262,14 @@ export default function ServicesPage() {
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
 
-                        <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-md rounded-full px-3 py-2 shadow-lg border border-white/20">
+                        {/* <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-md rounded-full px-3 py-2 shadow-lg border border-white/20">
                           <div className="flex items-center space-x-1">
                             <Star className="w-4 h-4 text-amber-500 fill-current" />
                             <span className="text-sm font-bold text-gray-900">{service.rating}</span>
                           </div>
-                        </div>
+                        </div> */}
 
-                        <div className="absolute top-4 left-4 bg-gradient-to-r from-green-500 to-green-400 hover:from-green-600 hover:to-green-500 text-black font-semibold rounded-full px-4 py-2 text-sm font-bold shadow-lg">
+<div className="absolute top-2 sm:top-3 left-2 sm:left-3 bg-gradient-to-r from-green-100 to-green-200 text-black rounded-lg px-2 sm:px-3 py-1 text-xs sm:text-sm font-semibold">
                           {service.price}
                         </div>
 
@@ -316,7 +316,7 @@ export default function ServicesPage() {
 
                         <Button
                           asChild
-                          className="w-full bg-gradient-to-r from-green-500 to-green-400 hover:from-green-600 hover:to-green-500 text-black font-semibold font-bold py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] text-base group/button"
+                          className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-semibold font-bold py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] text-base group/button"
                         >
                           <Link
                             href={`/booking?service=${encodeURIComponent(service.title)}`}

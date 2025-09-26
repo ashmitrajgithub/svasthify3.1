@@ -831,8 +831,8 @@ export default function BookingPage() {
               <span className="font-semibold">{currentStep > 1 ? "Back" : "Back to Home"}</span>
             </button>
             <h1 className="text-2xl font-bold text-gray-800">
-  Book Your <span className="text-green-600">Session</span>
-</h1>
+              Book Your <span className="text-green-600">Session</span>
+            </h1>
 
             <div className="w-24"></div>
           </div>
@@ -1014,7 +1014,7 @@ export default function BookingPage() {
                             aria-hidden="true"
                           />
                           <img
-                            src={trainer.image || "/placeholder.svg"}
+                            src={trainer.image || "/03.jpg"}
                             alt={trainer.name}
                             className="relative w-24 h-24 rounded-xl object-cover object-center ring-2 ring-green-300/30"
                           />
@@ -1044,9 +1044,7 @@ export default function BookingPage() {
                           <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500 mb-4">
                             <div className="inline-flex items-center gap-1">
                               <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                              <span>
-                                {trainer.rating} ({trainer.reviews} reviews)
-                              </span>
+                              <span>{trainer.rating}</span>
                             </div>
                             <span className="hidden sm:inline text-gray-300">•</span>
                             <div className="inline-flex items-center gap-1">
@@ -1059,16 +1057,6 @@ export default function BookingPage() {
                           <p className="text-gray-600 text-sm leading-relaxed line-clamp-2">{trainer.bio}</p>
 
                           {/* Optional: quick tags (languages) */}
-                          <div className="mt-3 flex flex-wrap gap-2">
-                            {trainer.languages.slice(0, 2).map((lang, i) => (
-                              <span
-                                key={`${trainer.id}-lang-${i}`}
-                                className="text-[11px] font-medium rounded-full border border-green-300/40 bg-green-50/40 text-gray-700 px-2 py-0.5"
-                              >
-                                {lang}
-                              </span>
-                            ))}
-                          </div>
                         </div>
                       </div>
 
@@ -1115,10 +1103,10 @@ export default function BookingPage() {
           {/* Step 2: Schedule */}
           {currentStep === 2 && (
             <div className="space-y-8">
-              <div className="text-center mb-8">
+              {/* <div className="text-center mb-8">
                 <h2 className="text-3xl font-bold text-gray-800 mb-4">Schedule Your Session</h2>
                 <p className="text-gray-600 text-lg">Pick your preferred date and time</p>
-              </div>
+              </div> */}
               {/* Redesign "Select Date" into a two-column layout inspired by the provided reference */}
               <div className="grid gap-6 md:grid-cols-[320px,1fr]">
                 {/* LEFT: Bold green sidebar */}
@@ -1286,7 +1274,7 @@ export default function BookingPage() {
                       <div className="px-3 py-1.5 rounded-full bg-green-100 text-green-800 text-sm font-semibold border border-green-300">
                         {calendarMonth.toLocaleDateString("en-US", { month: "long" })}
                       </div>
-                      <Button
+                      {/* <Button
                         variant="ghost"
                         size="sm"
                         className="rounded-full border border-green-200 bg-white hover:bg-green-50 text-green-700"
@@ -1298,7 +1286,7 @@ export default function BookingPage() {
                         }}
                       >
                         Today
-                      </Button>
+                      </Button> */}
                       <Button
                         variant="ghost"
                         size="icon"
@@ -1343,7 +1331,7 @@ export default function BookingPage() {
                         <div
                           key={date.toISOString()}
                           className={`text-center p-2 rounded transition-all duration-200 ${
-                            isToday ? "bg-green-50 text-green-700 font-semibold ring-2 ring-green-300" : ""
+                            isToday ? "bg-green-10 text-green-700 font-semibold ring-2 ring-green-100" : ""
                           } ${isSelected ? "bg-green-100 text-green-600 font-semibold ring-2 ring-green-400" : ""} ${
                             !isCurrentMonth
                               ? "text-gray-300 cursor-not-allowed"
@@ -1438,118 +1426,7 @@ export default function BookingPage() {
           {/* Step 3: Payment */}
           {currentStep === 3 && (
             <div className="space-y-8">
-              <div className="text-center">
-                <h2 className="text-3xl font-bold text-gray-800 mb-4">Complete Your Booking</h2>
-                <p className="text-gray-600 text-lg">Enter your details and choose a payment method</p>
-              </div>
-
-              {/* Booking Summary */}
-              <div className="relative overflow-hidden bg-gradient-to-br from-white via-green-50/30 to-emerald-50/40 rounded-3xl p-8 shadow-2xl border border-green-200/50 backdrop-blur-sm">
-                {/* Decorative elements */}
-                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-green-400/10 to-emerald-500/5 rounded-full blur-3xl" />
-                <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-green-300/10 to-teal-400/5 rounded-full blur-2xl" />
-
-                <div className="relative">
-                  {/* Header with icon */}
-                  <div className="flex items-center gap-4 mb-6">
-                    <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg shadow-green-500/25">
-                      <CheckCircle className="w-6 h-6 text-white" />
-                    </div>
-                    <div>
-                      <h3 className="text-2xl font-bold text-gray-800 tracking-tight">Booking Summary</h3>
-                      <p className="text-sm text-gray-600 font-medium">Review your session details</p>
-                    </div>
-                  </div>
-
-                  {/* Summary items with enhanced styling */}
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between p-4 bg-white/70 backdrop-blur-sm rounded-2xl border border-green-100/60 shadow-sm hover:shadow-md transition-all duration-200">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-green-100 rounded-xl flex items-center justify-center">
-                          <Briefcase className="w-4 h-4 text-green-600" />
-                        </div>
-                        <span className="text-gray-600 font-medium">Service</span>
-                      </div>
-                      <span className="font-bold text-gray-800 text-right">{selectedService?.title}</span>
-                    </div>
-
-                    <div className="flex items-center justify-between p-4 bg-white/70 backdrop-blur-sm rounded-2xl border border-green-100/60 shadow-sm hover:shadow-md transition-all duration-200">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-green-100 rounded-xl flex items-center justify-center">
-                          <User className="w-4 h-4 text-green-600" />
-                        </div>
-                        <span className="text-gray-600 font-medium">Trainer</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        {selectedTrainer?.image && (
-                          <img
-                            src={selectedTrainer.image || "/placeholder.svg"}
-                            alt={selectedTrainer.name}
-                            className="w-6 h-6 rounded-full object-cover ring-2 ring-green-200"
-                          />
-                        )}
-                        <span className="font-bold text-gray-800">{selectedTrainer?.name}</span>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-between p-4 bg-white/70 backdrop-blur-sm rounded-2xl border border-green-100/60 shadow-sm hover:shadow-md transition-all duration-200">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-green-100 rounded-xl flex items-center justify-center">
-                          <MapPin className="w-4 h-4 text-green-600" />
-                        </div>
-                        <span className="text-gray-600 font-medium">Date</span>
-                      </div>
-                      <span className="font-bold text-gray-800">{selectedDate}</span>
-                    </div>
-
-                    <div className="flex items-center justify-between p-4 bg-white/70 backdrop-blur-sm rounded-2xl border border-green-100/60 shadow-sm hover:shadow-md transition-all duration-200">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-green-100 rounded-xl flex items-center justify-center">
-                          <Shield className="w-4 h-4 text-green-600" />
-                        </div>
-                        <span className="text-gray-600 font-medium">Time</span>
-                      </div>
-                      <span className="font-bold text-gray-800">{selectedTime}</span>
-                    </div>
-
-                    {/* Total amount with special styling */}
-                    <div className="mt-6 p-6 bg-gradient-to-r from-green-600 to-emerald-600 rounded-2xl shadow-xl shadow-green-600/25">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
-                            <CreditCard className="w-5 h-5 text-white" />
-                          </div>
-                          <div>
-                            <span className="text-white/90 font-medium text-lg">Total Amount</span>
-                            <p className="text-white/70 text-sm">Including all charges</p>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <span className="font-bold text-white text-3xl tracking-tight">₹{calculateTotalPrice()}</span>
-                          <p className="text-white/80 text-sm font-medium">Per session</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Trust indicators */}
-                  <div className="mt-6 flex items-center justify-center gap-6 pt-6 border-t border-green-200/50">
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
-                      <Shield className="w-4 h-4 text-green-600" />
-                      <span className="font-medium">Secure Payment</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
-                      <CheckCircle className="w-4 h-4 text-green-600" />
-                      <span className="font-medium">Verified Trainers</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
-                      <Star className="w-4 h-4 text-green-600" />
-                      <span className="font-medium">Quality Assured</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
+              {/* Contact Information - Now comes first */}
               <div className="bg-gradient-to-br from-white to-green-50/30 rounded-2xl p-8 shadow-lg border border-green-100">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
@@ -1798,8 +1675,151 @@ export default function BookingPage() {
                 </div>
               </div>
 
+              {canProceedToNextStep() && (
+                <div className="relative overflow-hidden bg-white rounded-3xl shadow-2xl border border-gray-100">
+                  {/* Header Section */}
+                  <div className="relative bg-gradient-to-r from-emerald-600 via-green-600 to-teal-600 px-8 py-6">
+                    <div className="absolute inset-0 bg-black/5"></div>
+                    <div className="relative flex items-center justify-between">
+                      <div>
+                        <h3 className="text-2xl font-bold text-white mb-1">Booking Summary</h3>
+                        <p className="text-emerald-100 text-sm font-medium">Review your session details</p>
+                      </div>
+                      <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center">
+                        <CheckCircle className="w-6 h-6 text-white" />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Content Section */}
+                  <div className="p-8">
+                    {/* Session Details Grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                      {/* Service Card */}
+                      <div className="group relative p-6 bg-gradient-to-br from-gray-50 to-gray-100/50 rounded-2xl border border-gray-200/50 hover:shadow-lg transition-all duration-300">
+                        <div className="flex items-start gap-4">
+                          <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center group-hover:bg-emerald-200 transition-colors">
+                            <Briefcase className="w-6 h-6 text-emerald-600" />
+                          </div>
+                          <div className="flex-1">
+                            <p className="text-sm font-medium text-gray-500 mb-1">Service</p>
+                            <p className="font-bold text-gray-900 text-lg leading-tight">{selectedService?.title}</p>
+                            <p className="text-sm text-gray-600 mt-1">{selectedService?.duration}</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Trainer Card */}
+                      <div className="group relative p-6 bg-gradient-to-br from-gray-50 to-gray-100/50 rounded-2xl border border-gray-200/50 hover:shadow-lg transition-all duration-300">
+                        <div className="flex items-start gap-4">
+                          <div className="relative">
+                            {selectedTrainer?.image ? (
+                              <img
+                                src={selectedTrainer.image || "/placeholder.svg"}
+                                alt={selectedTrainer.name}
+                                className="w-12 h-12 rounded-xl object-cover ring-2 ring-emerald-200"
+                              />
+                            ) : (
+                              <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center">
+                                <User className="w-6 h-6 text-emerald-600" />
+                              </div>
+                            )}
+                            {selectedTrainer?.isVerified && (
+                              <div className="absolute -top-1 -right-1 w-5 h-5 bg-emerald-500 rounded-full flex items-center justify-center">
+                                <Check className="w-3 h-3 text-white" />
+                              </div>
+                            )}
+                          </div>
+                          <div className="flex-1">
+                            <p className="text-sm font-medium text-gray-500 mb-1">Trainer</p>
+                            <p className="font-bold text-gray-900 text-lg leading-tight">{selectedTrainer?.name}</p>
+                            <p className="text-sm text-gray-600 mt-1">{selectedTrainer?.specialization}</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Date & Time Card */}
+                      <div className="group relative p-6 bg-gradient-to-br from-gray-50 to-gray-100/50 rounded-2xl border border-gray-200/50 hover:shadow-lg transition-all duration-300">
+                        <div className="flex items-start gap-4">
+                          <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center group-hover:bg-blue-200 transition-colors">
+                            <MapPin className="w-6 h-6 text-blue-600" />
+                          </div>
+                          <div className="flex-1">
+                            <p className="text-sm font-medium text-gray-500 mb-1">Date & Time</p>
+                            <p className="font-bold text-gray-900 text-lg leading-tight">{selectedDate}</p>
+                            <p className="text-sm text-gray-600 mt-1">{selectedTime}</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Location Card */}
+                      <div className="group relative p-6 bg-gradient-to-br from-gray-50 to-gray-100/50 rounded-2xl border border-gray-200/50 hover:shadow-lg transition-all duration-300">
+                        <div className="flex items-start gap-4">
+                          <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center group-hover:bg-purple-200 transition-colors">
+                            <Building2 className="w-6 h-6 text-purple-600" />
+                          </div>
+                          <div className="flex-1">
+                            <p className="text-sm font-medium text-gray-500 mb-1">Location</p>
+                            <p className="font-bold text-gray-900 text-lg leading-tight">{bookingData.city}</p>
+                            <p className="text-sm text-gray-600 mt-1">{bookingData.addressLine1}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Pricing Section */}
+                    <div className="relative">
+                      <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 via-green-500/5 to-teal-500/5 rounded-2xl"></div>
+                      <div className="relative p-6 border border-emerald-200/50 rounded-2xl">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-4">
+                            <div className="w-14 h-14 bg-gradient-to-br from-emerald-500 to-green-600 rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-500/25">
+                              <CreditCard className="w-7 h-7 text-white" />
+                            </div>
+                            <div>
+                              <p className="text-lg font-bold text-gray-900">Total Amount</p>
+                              <p className="text-sm text-gray-600">Per session • All inclusive</p>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-4xl font-bold text-emerald-600 tracking-tight">
+                              ₹{calculateTotalPrice()}
+                            </p>
+                            <p className="text-sm text-gray-500 font-medium">No hidden charges</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Trust Indicators */}
+                    <div className="mt-8 pt-6 border-t border-gray-200">
+                      <div className="flex items-center justify-center gap-8">
+                        <div className="flex items-center gap-2 text-gray-600">
+                          <div className="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center">
+                            <Shield className="w-4 h-4 text-emerald-600" />
+                          </div>
+                          <span className="text-sm font-medium">Secure Payment</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-gray-600">
+                          <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                            <CheckCircle className="w-4 h-4 text-blue-600" />
+                          </div>
+                          <span className="text-sm font-medium">Verified Trainers</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-gray-600">
+                          <div className="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center">
+                            <Star className="w-4 h-4 text-yellow-600" />
+                          </div>
+                          <span className="text-sm font-medium">Quality Assured</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {/* Payment Method */}
-              <div className="bg-white rounded-2xl p-6 shadow-md">
+              {/* <div className="bg-white rounded-2xl p-6 shadow-md">
                 <h3 className="text-xl font-bold text-gray-800 mb-4">Payment Method</h3>
                 <div className="space-y-4">
                   {paymentMethods.map((method) => {
@@ -1825,7 +1845,7 @@ export default function BookingPage() {
                     )
                   })}
                 </div>
-              </div>
+              </div> */}
 
               {/* Special Requests */}
               <div className="bg-white rounded-2xl p-6 shadow-md">

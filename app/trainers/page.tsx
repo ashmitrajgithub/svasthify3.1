@@ -61,7 +61,7 @@ export default function TrainersPage() {
           <div className="mb-10 text-center">
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-black mb-4 leading-tight tracking-tight">
               Explore all{" "}
-              <span className="bg-gradient-to-r from-green-800 to-green-800 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-green-600 to-green-700 bg-clip-text text-transparent">
                 Trainers
               </span>
             </h2>
@@ -117,15 +117,48 @@ export default function TrainersPage() {
                     className="w-full h-full object-cover"
                   />
                   {trainer.verified && (
-                    <div className="absolute top-3 right-3 z-10">
-                      <div className="rounded-full bg-background/90 backdrop-blur px-2.5 py-1.5 border border-border">
-                        <div className="flex items-center gap-1.5 text-xs text-foreground">
-                          <Shield className="w-3.5 h-3.5" />
-                          <span>Verified</span>
+                    <div className="absolute top-0 right-0 w-16 h-16 overflow-hidden">
+                      <div className="absolute top-0 right-0 w-16 h-16">
+                        {/* Main curved ribbon with enhanced gradient */}
+                        <div
+                          className="absolute top-0 right-0 bg-gradient-to-bl from-emerald-400 via-green-500 to-green-600"
+                          style={{
+                            width: "64px",
+                            height: "64px",
+                            borderRadius: "0 0 0 100%",
+                            boxShadow: "0 4px 16px rgba(34, 197, 94, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3)",
+                          }}
+                        />
+                        {/* Inner highlight for depth */}
+                        <div
+                          className="absolute top-0 right-0 bg-gradient-to-bl from-white/25 to-transparent"
+                          style={{
+                            width: "60px",
+                            height: "60px",
+                            borderRadius: "0 0 0 100%",
+                            top: "2px",
+                            right: "2px",
+                          }}
+                        />
+                        <div className="absolute top-2 right-2 transform -rotate-60 text-white text-center">
+                          <div className="flex flex-col items-center justify-center space-y-0.5">
+                            <Shield className="w-4 h-4 drop-shadow-md" />
+                            <div className="text-[8px] font-extrabold leading-tight tracking-wider drop-shadow-md whitespace-nowrap">
+                              VERIFIED
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
                   )}
+                  <div className="absolute bottom-2 right-2">
+                    <Badge
+                      variant="secondary"
+                      className="rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 transition-colors text-white font-bold px-3 py-1 shadow-lg"
+                    >
+                      {trainer.price}
+                    </Badge>
+                  </div>
                   <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 " />
                 </div>
 
@@ -147,15 +180,6 @@ export default function TrainersPage() {
                       <MapPin className="w-4 h-4" />
                       {trainer.location}
                     </span>
-                    <Badge
-                      variant="secondary"
-                      className="rounded-full bg-green-600 hover:bg-green-700 transition-colors"
-                    >
-                      {trainer.price}/session
-                    </Badge>
-                    <Badge variant="outline" className="rounded-full">
-                      {trainer.availability}
-                    </Badge>
                   </div>
 
                   {trainer.highlights && trainer.highlights.length > 0 && (
@@ -164,7 +188,7 @@ export default function TrainersPage() {
                         <Badge
                           key={h}
                           variant="secondary"
-                          className="rounded-full bg-green-600 hover:bg-green-700 transition-colors"
+                          className="rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 transition-colors"
                         >
                           {h}
                         </Badge>
@@ -174,7 +198,7 @@ export default function TrainersPage() {
 
                   <div className="mt-5">
                     <Button
-                      className="w-full rounded-full bg-green-600 hover:bg-green-700 transition-colors"
+                      className="w-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white transition-colors"
                       onClick={() => {
                         setSelectedTrainer(trainer)
                         setBookingModalOpen(true)
